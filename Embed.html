@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- css -->
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<!-- javascript -->
+
+<!-- jQuery library -->
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- javascript -->
+<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/clipboard@1/dist/clipboard.min.js"></script>
+
+<title>Embed Nowcast</title>
+</head>
+<body>
+
+<!-- new stuff -->
+<div class="container">
+  <h2>Create a map of your beach(es) for your website!</h2>
+<form name="embed" action="" onsubmit="return validateForm()" method="post">
+  <div class="form-group">
+    <label for="state">State</label>
+    <input type="text" name="state" class="form-control" id="state" placeholder="Two letter state code that your beach(es) is in Ex: NY, OH, etc.">
+  </div>
+  <div class="form-group">
+    <label for="latitude">Latitude</label>
+    <input type="text" name="latitude" class="form-control" id="latitude" placeholder="Latitude that you want the center of your map to be at">
+  </div>
+    <div class="form-group">
+    <label for="state">Longitude</label>
+    <input type="text" name="longitude" class="form-control" id="longitude" placeholder="Longitude that you want the center of your map to be at">
+  </div>
+  <div class="form-group">
+    <label for="zoom">Zoom</label>
+    <input type="text" name="zoom" class="form-control" id="zoom" placeholder="Desired zoom level">
+  </div>
+    <div class="form-group">
+    <label for="height">Height (in pixels)</label>
+    <input type="text" name="height" class="form-control" id="height" placeholder="Desired height of map Ex: 500">
+  </div>
+  <div class="form-group">
+    <label for="width">Width (in pixels)</label>
+    <input type="text" name="width" class="form-control" id="width" placeholder="Desired width of map Ex: 600">
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+<h4>How it will look on your website:</h4>
+<br />
+ <div id="iframe"></div>
+ <br />
+ <h4>Copy and paste this iframe into your website:</h4>
+  <textarea class="form-control" rows="5" id="comment" placeholder="This will appear once you submit the form above"></textarea>
+ <button class="btn" data-clipboard-action="copy" data-clipboard-target="#comment">Copy</button>
+</div>
+
+
+
+<!-- old stuff -->
+<!--
+<form name = "embed" action="" onsubmit="return validateForm()" method="post">
+  State:<br>
+  <input type="text" name="state" value="Enter the state that your beach(es) are in"><br>
+  Latitude:<br>
+  <input type="text" name="latitude" value="Choose the location that will show in your iframe (latitude)"><br>
+    Longitude:<br>
+  <input type="text" name="longitude" value="Choose the location that will show in your iframe (longitude)"><br>
+  Zoom:<br>
+  <input type="text" name="zoom" value="Choose your desired zoom level"><br>
+   Height:<br>
+  <input type="text" name="height" value="Choose the height of your iframe (pixels)"><br>
+   Width:<br>
+  <input type="text" name="width" value="Choose the width of your iframe"><br>
+  <input type="submit" value="Submit">
+</form>
+  <br /><br />
+  Your iframe (as it will appear on your website) will appear below once you click submit:
+  <div id="iframe"></div>
+  <br /><br />
+  Your iframe (as text that you can copy) will appear below:
+  <br /><br />
+ <div id="copy-target"></div>
+ <br /><br />
+<button class="copy-button" data-clipboard-action="copy" data-clipboard-target="#copy-target">Copy</button>
+-->
+  <script>
+ var clipboard = new Clipboard('.btn');
+  function validateForm() {
+ //$("#iframe").empty()
+  console.log("here");
+    var state = $("#state").val();
+	var lat = $("#latitude").val();
+	var lng = $("#longitude").val();
+	var zoom = $("#zoom").val();
+	var height = $("#height").val();
+	var width = $("#width").val();
+    if (state == "" || lat == "" || lng == "" || zoom == "" || height == "" || width == "") {
+        alert("All fields must be filled out.");
+	   return false;
+    } else {
+	
+	var urlString = 'https://ny.water.usgs.gov/maps/nowcast/?state=' + state + '&amp;lat=' + lat + '&amp;lng=' + lng + '&amp;zoom=' + zoom;
+	
+	$("#iframe").html('<iframe src=\"' + urlString + '\" style=\"width: ' + width + 'px; height: ' + height + 'px\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" frameborder=\"0\" vspace=\"0\" hspace=\"0\"></iframe>');
+
+	var urlContent = $("#iframe").html().replace(/&amp;/g, "&");
+	var urlContentAsText = document.createTextNode(urlContent);
+console.log(urlContent);
+$("#comment").html(urlContentAsText);
+return false;
+}
+}
+
+//function ClipBoard() 
+//{
+//holdtext.innerText = copytext.innerText;
+//Copied = holdtext.createTextRange();
+//Copied.execCommand("Copy");
+//}
+
+  
+
+  
+  </script>
+</body>
+</html>
