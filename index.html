@@ -1,12 +1,13 @@
 <!doctype html>
 <html lang="en">
+
 <head>
 	<base target="_parent">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
 	<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
 	<title>Nowcast Beach Status</title>
 
@@ -32,8 +33,9 @@
 	<!--<script src="js/beaches.js"></script>-->
 
 </head>
+
 <body id="body">
-<!--<div id="popupModal" class="modal fade"  tabindex="-1" role="dialog">
+	<!--<div id="popupModal" class="modal fade"  tabindex="-1" role="dialog">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
     <div class="panel panel-primary">
@@ -50,92 +52,96 @@
     </div>
 			</div>
 			<!-- /.modal-content -->
-		<!--</div>-->
-		<!-- /.modal-dialog -->
 	<!--</div>-->
-	<div id="selectStatetoBegin" class="modal fade"  tabindex="-1" role="dialog">
+	<!-- /.modal-dialog -->
+	<!--</div>-->
+	<div id="selectStatetoBegin" class="modal fade" tabindex="-1" role="dialog">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
-			<br /><br />
-<div align="center" style="font-family: 'Ubuntu', sans-serif;"><h1><font color="darkred">Select a state using the drop down menu in the header to begin.</font></h1>
-(click anywhere outside of this dialog box to exit)</div>
-			<br /><br />
+				<br /><br />
+				<div align="center" style="font-family: 'Ubuntu', sans-serif;">
+					<h1>
+						<font color="darkred">Select a state using the drop down menu in the header to begin.</font>
+					</h1>
+					(click anywhere outside of this dialog box to exit)</div>
+				<br /><br />
 			</div>
 			<!-- /.modal-content -->
 		</div>
 		<!-- /.modal-dialog -->
-</div>
+	</div>
 	<div id="overlay" align="center">
-  <div id="text">loading...<br /><img src="./loading.gif" height="" width="" /></div>
-</div>
-<div id='topnav'>
-  <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="navbar-header">
-			<button id="aboutButton" type="button" class="btn btn-info navbar-btn pull-right" onclick="$('#aboutModal').modal('show'); return false;"><i class="fa fa-info-circle"></i><span class="hidden-xs">&nbsp;&nbsp;About</span></button>
-			<button id="legendButton" type="button" class="btn btn-info navbar-btn pull-right" ><i class="fa fa-list-ul"></i><span class="hidden-xs">&nbsp;&nbsp;Legend</span></button>
-		     <a class="navbar-brand" href="https://www.usgs.gov"><img class='hidden-xs' style='display:inline-block;' src="images/usgs_logo.png"/><img class='visible-xs' style='display:inline-block;' src="images/usgs_logo_small.png"/><span class='hidden-xs' style='font-size:20px;display:inline-block;'>&nbsp;&nbsp;Nowcast Beach Status</span><span class='visible-xs' style='font-size:9px;display:inline-block;'>Nowcast Beach Status</span></a>
-			<!--<span>
+		<div id="text">loading...<br /><img src="./loading.gif" height="" width="" /></div>
+	</div>
+	<div id='topnav'>
+		<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+			<div class="navbar-header">
+				<button id="aboutButton" type="button" class="btn btn-info navbar-btn pull-right" onclick="$('#aboutModal').modal('show'); return false;"><i class="fa fa-info-circle"></i><span class="hidden-xs">&nbsp;&nbsp;About</span></button>
+				<button id="legendButton" type="button" class="btn btn-info navbar-btn pull-right"><i class="fa fa-list-ul"></i><span class="hidden-xs">&nbsp;&nbsp;Legend</span></button>
+				<a class="navbar-brand" href="https://www.usgs.gov"><img class='hidden-xs' style='display:inline-block;' src="images/usgs_logo.png"/><img class='visible-xs' style='display:inline-block;' src="images/usgs_logo_small.png"/><span class='hidden-xs' style='font-size:20px;display:inline-block;'>&nbsp;&nbsp;Nowcast Beach Status</span><span class='visible-xs' style='font-size:9px;display:inline-block;'>Nowcast Beach Status</span></a>
+				<!--<span>
 			<a href="/maps/nowcast%202.0URL/Embed.html" class="btn btn-info" role="button" style="float:right;margin-top:8px;margin-right:15px;">Embed Your Beach(es) on Your Website</a>
 			 </span>-->
-			<span>
+				<span>
 				 <div id="stateDropdown" style='float:right;margin-top:8px;margin-right:15px;'>
 					<select id='stateDropdownSelect' class='selectpicker' data-width='fit' data-selected-text-format='count' title='<b><font color="darkred">State</font></b>'><option value="NY">NY</option><option value="OH">OH</option><option value="PA">PA</option></select>
 				 </div>
 			 </span>
-        </div>
-	</div>
+			</div>
+		</div>
 
-<!--add Beach Conditions for:... thing below once you know how to position it correctly-->
-	<!--<div class="display bs-callout bs-callout-info" role="alert">Beach Conditions for: <span id="currentDate"></span></div>-->
-</div>
+		<!--add Beach Conditions for:... thing below once you know how to position it correctly-->
+		<!--<div class="display bs-callout bs-callout-info" role="alert">Beach Conditions for: <span id="currentDate"></span></div>-->
+	</div>
 	<div id="legend" class="legend" style="display:none">
 		<p>To query another date, use the datepicker below:</p>
 		<div style="margin:5px;" class="row">
 			<div class="btn-group pull-left">
 				<div class="input-group" style="width:150px;float:left;">
-				  <input type="button" class="input-sm form-control datepicker"></input>
-				  <span class="input-group-btn">
+					<input type="button" class="input-sm form-control datepicker"></input>
+					<span class="input-group-btn">
 					<button id="dateQueryButton" data-loading-text="Loading..." type="button" class="btn btn-sm btn-primary">Load Day</button>
 				  </span>
-				</div><!-- /input-group -->
+				</div>
+				<!-- /input-group -->
 			</div>
 		</div>
 
 		<div style="margin:6px;">
 			<table>
 				<tr>
-					<td><img src="images/marker-blue.png"/></td>
+					<td><img src="images/marker-blue.png" /></td>
 					<td>&nbsp;&nbsp;No condition reported</td>
-				  </tr>
-				  <tr>
-					<td><img src="images/marker-green.png"/></td>
+				</tr>
+				<tr>
+					<td><img src="images/marker-green.png" /></td>
 					<td>&nbsp;&nbsp;Good Condition</td>
-				  </tr>
-				  <tr>
-					<td><img src="images/marker-red.png"/></td>
+				</tr>
+				<tr>
+					<td><img src="images/marker-red.png" /></td>
 					<td>&nbsp;&nbsp;Advisory Condition</td>
-				  </tr>
-				  <tr>
-					<td><img src="images/marker-black.png"/></td>
+				</tr>
+				<tr>
+					<td><img src="images/marker-black.png" /></td>
 					<td>&nbsp;&nbsp;Beach Closed</td>
-				  </tr>
-					<td><img src="images/marker-gray.png"/></td>
-					<td>&nbsp;&nbsp;Off Season</td>
-				  </tr>
+				</tr>
+				<td><img src="images/marker-gray.png" /></td>
+				<td>&nbsp;&nbsp;Off Season</td>
+				</tr>
 			</table>
 		</div>
 	</div>
 
 
 	<div id="map"></div>
-	
-<!-- BEGIN USGS Footer Template -->
-<div id="usgsfooter">
 
-<div class="navbar navbar-inverse navbar-fixed-bottom visible-tablet-mobile" role="navigation">
-	<div class="navbar-header">
+	<!-- BEGIN USGS Footer Template -->
+	<div id="usgsfooter">
 
-	<span class='visible-tablet-mobile'>
+		<div class="navbar navbar-inverse navbar-fixed-bottom visible-tablet-mobile" role="navigation">
+			<div class="navbar-header">
+
+				<span class='visible-tablet-mobile'>
 	<p id="usgsfooterbar">
 	<span class='hidden-xs'>
 		<a href="https://www.usgs.gov/laws/accessibility.html" target="_blank" title="Accessibility Policy (Section 508)">Accessibility</a>
@@ -144,85 +150,108 @@
 		<a href="https://www.usgs.gov/laws/policies_notices.html" target="_blank" title="Policies and notices that govern information posted on USGS Web sites.">Policies and Notices</a>
 		<a href="https://usa.gov/" target="_blank" title="USA.gov" style="float:right;">USA.gov</a>
 	</span>
-	<span class='visible-xs' style='font-size: 6px;'>
+				<span class='visible-xs' style='font-size: 6px;'>
 		<a href="https://www.usgs.gov/laws/accessibility.html" target="_blank" title="Accessibility Policy (Section 508)">Accessibility</a>
 		<a href="https://www.usgs.gov/foia/" target="_blank" title="Freedom of Information Act">FOIA</a>
 		<a href="https://www.usgs.gov/laws/privacy.html" target="_blank" title="Privacy policies of the U.S. Geological Survey.">Privacy</a>
 		<a href="https://www.usgs.gov/laws/policies_notices.html" target="_blank" title="Policies and notices that govern information posted on USGS Web sites.">Policies and Notices</a>
 		<a href="https://usa.gov/" target="_blank" title="USA.gov" style="float:right;">USA.gov</a>
 	</span>
-	</p></span>
+				</p>
+				</span>
 
-	<span class='visible-tablet-mobile'>
+				<span class='visible-tablet-mobile'>
 	<p id="usgsfootertext" style="font-size: 0;position: relative;">
 			<!--<span class='hidden-xs'><span class='visible-tablet-mobile'><a href="https://usa.gov/"><img src="images/footer_graphic_usagov.jpg" alt="USA.gov logo" title="USAGov: Government Made Easy" width="90" height="26" /></a></span></span>
-			<span class='visible-xs'><span class='visible-tablet-mobile'><a href="https://usa.gov/"><img src="images/footer_graphic_usagov.jpg" alt="USA.gov logo" title="USAGov: Government Made Easy" width="45" height="13" /></a></span></span>-->
-			
-			<span style="position: absolute;top: 50%;margin-top:-10.5px;right:7px;"><iframe src="https://www.facebook.com/plugins/like.php?href=https://www.facebook.com/USGSNewYork&width=106&layout=button_count&action=like&size=small&show_faces=false&share=true&height=46&appId=422636224532398" width="125" height="25" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe></span>
-			
-			<span class='hidden-xs'><span class='visible-tablet-mobile' style='font-size:12px; color:white'><a href="https://www.doi.gov/" style='font-size:12px; color:white'>U.S. Department of the Interior</a> | <a href="https://www.usgs.gov/" style='font-size:12px; color:white'>U.S. Geological Survey</a><br /></span></span>
-			<span class='visible-xs'><span class='visible-tablet-mobile' style='font-size:6px; color:white'><a href="https://www.doi.gov/" style='font-size:6px; color:white'>U.S. Department of the Interior</a> | <a href="https://www.usgs.gov/" style='font-size:6px; color:white'>U.S. Geological Survey</a><br /></span></span>
-			
-			<span class='hidden-xs'><span class='visible-tablet-mobile' style='font-size:12px; color:white'>URL: <a href="https://ny.water.usgs.gov/maps/nowcast/" title="https://ny.water.usgs.gov/maps/nowcast/" style='font-size:12px; color:white'>https://ny.water.usgs.gov/maps/nowcast/</a><br /></span></span>
-			<span class='visible-xs'><span class='visible-tablet-mobile' style='font-size:6px; color:white'>URL: <a href="https://ny.water.usgs.gov/maps/nowcast/" title="https://ny.water.usgs.gov/maps/nowcast/" style='font-size:6px; color:white'>https://ny.water.usgs.gov/maps/nowcast/</a><br /></span></span>
-			
-			<span class='hidden-xs'><span class='visible-tablet-mobile' style='font-size:12px; color:white'>Page Contact Information: <a href="mailto:pdevries@usgs.gov" style='font-size:12px; color:white' target="_blank">Website Manager</a><br /></span></span>
-			<span class='visible-xs'><span class='visible-tablet-mobile' style='font-size:6px; color:white'>Page Contact Information: <a href="mailto:pdevries@usgs.gov" style='font-size:6px; color:white' target="_blank">Website Manager</a><br /></span></span>
-			
-			<span class='hidden-xs'><span class='visible-tablet-mobile' style='font-size:12px; color:white'>Page Last Modified: Wednesday, August 2, 2017</span></span>
-			<span class='visible-xs'><span class='visible-tablet-mobile' style='font-size:6px; color:white'>Page Last Modified: Wednesday, August 2, 2017</span></span>
-	</p>
-    </span>
-</div>
-</div>
-</div>
-<!-- END USGS Footer Template -->
+				<span class='visible-xs'><span class='visible-tablet-mobile'><a href="https://usa.gov/"><img src="images/footer_graphic_usagov.jpg" alt="USA.gov logo" title="USAGov: Government Made Easy" width="45" height="13" /></a></span></span>-->
 
-	<div id="markerModal" class="modal fade"  tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button class="close" type="button" data-dismiss="modal" aria-hidden="true" style="color:gray;">&times;</button>
-            <h4 class="modal-title"><span class="beachName"></span> Conditions</h4>
-          </div>
-          <div id="popupModal" class="modal-body">
-				<ul class="nav nav-tabs" id="tabs">
-					<li role="presentation" class="active"><a href="#tab1" data-toggle="tab"><i class="fa fa-caret-square-o-right"></i>&nbsp;&nbsp;Current Conditions</a></li>
-					<li role="presentation"><a href="#tab2" data-toggle="tab"><i class="fa fa-calendar"></i>&nbsp;&nbsp;Recent Conditions</a></li>
-					<li role="presentation" id="3rdTab"></li>
-					<!--<div id="3rdTab"></div>-->
-				</ul>
-				<div class="tab-content">
-					<div class="tab-pane active" id="tab1"></br>
-						<table class="table table-hover">
-							<tr><td><strong>Date: </strong></td><td><span id="conditionsDate"></span></td></tr>
-							<tr><td><strong>Beach Name: </strong></td><td><span class="beachName"></span></td></tr>
-							<tr><td><strong>Lake Temperature (&deg;F): </strong></td><td><span id="lakeTemp"></span></td></tr>
-							<tr><td><strong>Condition: </strong></td><td><div id="beachConditionBar" class="conditionsBar"><span id="beachCondition"></span></div></td></tr>
-						</table>
-						<div id="beachguard"></div>
-						<div id="gmap"></div>
-						<a style="display:inline-block;" id="directions" href=""  target="_blank" class="btn btn-sm btn-default pull-right" type="button"><span><i class="fa fa-globe"></i></span>&nbsp;&nbsp;Directions</a></br></br>
-					</div>
-					<div class="tab-pane" id="tab2"></br>
-						<table id="recentConditionsTable" class="table table-condensed table-striped table-hover">
-						</table>
-					</div>
-					<div class="tab-pane" id="tab3"></br>
-						<!--#include virtual="details/generalpicture.html" -->
-						<div id="beachDetails"></div>
-					</div>
-				</div>
-           </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+				<span style="position: absolute;top: 50%;margin-top:-10.5px;right:7px;"><iframe src="https://www.facebook.com/plugins/like.php?href=https://www.facebook.com/USGSNewYork&width=106&layout=button_count&action=like&size=small&show_faces=false&share=true&height=46&appId=422636224532398" width="125" height="25" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe></span>
 
-	<div id="aboutModal" class="modal fade"  tabindex="-1" role="dialog">
+				<span class='hidden-xs'><span class='visible-tablet-mobile' style='font-size:12px; color:white'><a href="https://www.doi.gov/" style='font-size:12px; color:white'>U.S. Department of the Interior</a> | <a href="https://www.usgs.gov/" style='font-size:12px; color:white'>U.S. Geological Survey</a><br /></span></span>
+				<span class='visible-xs'><span class='visible-tablet-mobile' style='font-size:6px; color:white'><a href="https://www.doi.gov/" style='font-size:6px; color:white'>U.S. Department of the Interior</a> | <a href="https://www.usgs.gov/" style='font-size:6px; color:white'>U.S. Geological Survey</a><br /></span></span>
+
+				<span class='hidden-xs'><span class='visible-tablet-mobile' style='font-size:12px; color:white'>URL: <a href="https://ny.water.usgs.gov/maps/nowcast/" title="https://ny.water.usgs.gov/maps/nowcast/" style='font-size:12px; color:white'>https://ny.water.usgs.gov/maps/nowcast/</a><br /></span></span>
+				<span class='visible-xs'><span class='visible-tablet-mobile' style='font-size:6px; color:white'>URL: <a href="https://ny.water.usgs.gov/maps/nowcast/" title="https://ny.water.usgs.gov/maps/nowcast/" style='font-size:6px; color:white'>https://ny.water.usgs.gov/maps/nowcast/</a><br /></span></span>
+
+				<span class='hidden-xs'><span class='visible-tablet-mobile' style='font-size:12px; color:white'>Page Contact Information: <a href="mailto:pdevries@usgs.gov" style='font-size:12px; color:white' target="_blank">Website Manager</a><br /></span></span>
+				<span class='visible-xs'><span class='visible-tablet-mobile' style='font-size:6px; color:white'>Page Contact Information: <a href="mailto:pdevries@usgs.gov" style='font-size:6px; color:white' target="_blank">Website Manager</a><br /></span></span>
+
+				<span class='hidden-xs'><span class='visible-tablet-mobile' style='font-size:12px; color:white'>Page Last Modified: Wednesday, August 2, 2017</span></span>
+				<span class='visible-xs'><span class='visible-tablet-mobile' style='font-size:6px; color:white'>Page Last Modified: Wednesday, August 2, 2017</span></span>
+				</p>
+				</span>
+			</div>
+		</div>
+	</div>
+	</div>
+	<!-- END USGS Footer Template -->
+
+	<div id="markerModal" class="modal fade" tabindex="-1" role="dialog">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
-			<div id="changingTabs">
+				<div class="modal-header">
+					<button class="close" type="button" data-dismiss="modal" aria-hidden="true" style="color:gray;">&times;</button>
+					<h4 class="modal-title"><span class="beachName"></span> Conditions</h4>
+				</div>
+				<div id="popupModal" class="modal-body">
+					<ul class="nav nav-tabs" id="tabs">
+						<li role="presentation" class="active"><a href="#tab1" data-toggle="tab"><i class="fa fa-caret-square-o-right"></i>&nbsp;&nbsp;Current Conditions</a></li>
+						<li role="presentation"><a href="#tab2" data-toggle="tab"><i class="fa fa-calendar"></i>&nbsp;&nbsp;Recent Conditions</a></li>
+						<li role="presentation" id="3rdTab"></li>
+						<!--<div id="3rdTab"></div>-->
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="tab1">
+							</br>
+							<table class="table table-hover">
+								<tr>
+									<td><strong>Date: </strong></td>
+									<td><span id="conditionsDate"></span></td>
+								</tr>
+								<tr>
+									<td><strong>Beach Name: </strong></td>
+									<td><span class="beachName"></span></td>
+								</tr>
+								<tr>
+									<td><strong>Lake Temperature (&deg;F): </strong></td>
+									<td><span id="lakeTemp"></span></td>
+								</tr>
+								<tr>
+									<td><strong>Condition: </strong></td>
+									<td>
+										<div id="beachConditionBar" class="conditionsBar"><span id="beachCondition"></span></div>
+									</td>
+								</tr>
+							</table>
+							<div id="beachguard"></div>
+							<div id="gmap"></div>
+							<a style="display:inline-block;" id="directions" href="" target="_blank" class="btn btn-sm btn-default pull-right" type="button"><span><i class="fa fa-globe"></i></span>&nbsp;&nbsp;Directions</a></br>
+							</br>
+						</div>
+						<div class="tab-pane" id="tab2">
+							</br>
+							<table id="recentConditionsTable" class="table table-condensed table-striped table-hover">
+							</table>
+						</div>
+						<div class="tab-pane" id="tab3">
+							</br>
+							<!--#include virtual="details/generalpicture.html" -->
+							<div id="beachDetails"></div>
+						</div>
+					</div>
+				</div>
 			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<div id="aboutModal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div id="changingTabs">
+				</div>
 			</div>
 			<!-- /.modal-content -->
 		</div>
@@ -230,5 +259,6 @@
 	</div>
 	<!-- /.modal -->
 	<div id="sitelink" style="float:right;font-weight: bold;font-size: 15px;font-family: 'Ubuntu', sans-serif;"></div>
-  </body>
+</body>
+
 </html>
