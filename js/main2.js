@@ -41,26 +41,298 @@ $(document).ready(function () {
 	map.addLayer(markers);
 	var params = {};
 	URLparams = getAllUrlParams();
-	/*if ("predState" in getAllUrlParams()) {
-		
-		theChosenState = getAllUrlParams().predState.toUpperCase();
-			if (theChosenState == "OH") {
-				$("#changingTabs").load(encodeURI('ohiotabs.html'));
-			} else {
-				$("#changingTabs").load(encodeURI('NY&PAtabs.html'));
-			}
-			
-			if (theChosenState == "PA") {
-				PASelected = true;
-				theChosenState = "OH";
-			} else {
-				PASelected = false;
-			}
-			markers.clearLayers();
-			zoomFlag = false;
-			getSites();
-	}*/
+	processURLparams();
+	//call initial function to get site list
+	//getSites();
 
+	//listener for date query
+	$('#dateQueryButton').on('click', function () {
+		dateQueryButtonFunction();
+	});
+
+	$('#showPieChart').on('click', function () {
+		showPieChartFunction();
+	});
+
+	//setup datepicker dates
+	var startDate = new Date("2014-01-01T00:00:00");
+	var today = new Date();
+	var yesterday = new Date();
+	yesterday.setDate(yesterday.getDate() - 1);;
+
+	//instantiate
+	$('.datepicker').datepicker({
+		format: 'yyyy-mm-dd',
+		autoclose: true,
+		todayHighlight: true,
+		startDate: startDate,
+		endDate: today
+	})
+
+	//set datepicker date to yesterday so it has a value
+	$(".datepicker").datepicker("update", yesterday);
+
+	$("#legendButton").click(function () {
+		legendButtonFunction();
+	});
+
+	$('#stateDropdownSelect').on('changed.bs.select', function (e) {
+		stateDropdownSelectFunction(e);
+	});
+
+	$('#chooseTimeFrame').on('changed.bs.select', function (e) {
+		chooseTimeFrameFunction(e);
+	});
+	//marker click override listener
+	markers.on('click', onMarkerClick);
+
+	/*map.on('click', function(e) {
+		alert("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng)
+	});*/
+
+	//end document ready function
+});
+
+function chooseTimeFrameFunction(e) {
+	$("#showPieChart").hide();
+	beforeChangeTimePeriod = false;
+	changedTimePeriod = true;
+	timeFrame = $(e.target).find('option:selected').attr('value');
+
+	//Put in own function (ajax stuff)
+	$.ajax({
+		type: "GET",
+		url: "getconditions2.php",
+		//data: "queryDate=" + queryValue,
+		data: { 'State': theChosenState, 'queryDate': queryDateGlobal, 'timeFrame': timeFrame },
+		success: function (data) {
+			var currentSiteConditionsArray = [];
+			var curConditionWithEcoliArray = [];
+			//parse out conditions to json
+			var conditionsArray = $.parseJSON(data);
+
+			//sort the array by date, descending
+			conditionsArray.sort(function (a, b) {
+				a = new Date(a.DATE);
+				b = new Date(b.DATE);
+				//return a>b ? -1 : a<b ? 1 : 0;
+				return b - a;
+			});
+
+			$.each(conditionsArray, function (i, curCondition) {
+				if (curCondition.BEACH_NAME == currentOpenSite) {
+					currentSiteConditionsArray.push(curCondition);
+				}
+			});
+
+
+
+			if (!$.isEmptyObject(conditionsArray)) {
+
+				$.each(currentSiteConditionsArray, function (i, curConditionWithEcoli) {
+					if (curConditionWithEcoli.LAB_ECOLI) {
+						curConditionWithEcoliArray.push(curConditionWithEcoli);
+					}
+				});
+				$("#recentConditionsTable").find("tr:gt(0)").remove();
+
+				var totalCount = 0;
+				var CorrectExceed = 0;
+				var CorrectNonExceed = 0;
+				var FalseExceed = 0;
+				var FalseNonExceed = 0;
+
+				var prevDayCorrectExceed = 0;
+				var prevDayCorrectNonExceed = 0;
+				var prevDayFalseExceed = 0;
+				var prevDayFalseNonExceed = 0;
+
+				if (!$.isEmptyObject(curConditionWithEcoliArray)) {
+					$.each(curConditionWithEcoliArray, function (i, curConditionWithEcoliCalculations) {
+						if (i < curConditionWithEcoliArray.length - 1) {
+
+							//curSiteCondition.YESTERDAYCHECK = cursiteCondition.LAB_ECOLI - currentSiteConditionsArray[i+1].LAB_ECOLI
+							if (curConditionWithEcoliCalculations.LAB_ECOLI >= 235 && curConditionWithEcoliArray[i + 1].LAB_ECOLI >= 235) {
+								prevDayCorrectExceed++;
+							}
+							if (curConditionWithEcoliCalculations.LAB_ECOLI < 235 && curConditionWithEcoliArray[i + 1].LAB_ECOLI < 235) {
+								prevDayCorrectNonExceed++;
+							}
+							if (curConditionWithEcoliCalculations.LAB_ECOLI < 235 && curConditionWithEcoliArray[i + 1].LAB_ECOLI >= 235) {
+								prevDayFalseExceed++;
+							}
+							if (curConditionWithEcoliCalculations.LAB_ECOLI >= 235 && curConditionWithEcoliArray[i + 1].LAB_ECOLI < 235) {
+								prevDayFalseNonExceed++;
+							}
+						}
+					});
+				}
+
+
+				$.each(currentSiteConditionsArray, function (i, curSiteCondition) {
+
+
+					//omit empty data and only do it if there is enough data
+
+					totalCount++;
+					if (curSiteCondition.ERROR_TYPE == "Correct Exceed") {
+						CorrectExceed++;
+					}
+					if (curSiteCondition.ERROR_TYPE == "Correct Non-Exceed") {
+						CorrectNonExceed++;
+					}
+					if (curSiteCondition.ERROR_TYPE == "False Exceed") {
+						FalseExceed++;
+					}
+					if (curSiteCondition.ERROR_TYPE == "False Non-Exceed") {
+						FalseNonExceed++;
+					}
+
+
+
+					$('#recentConditionsTable').append('<tr><td>' + curSiteCondition.DATE + '</td><td>' + curSiteCondition.LAB_ECOLI + '</td><td>' + curSiteCondition.NOWCAST_ECOLI + '</td><td>' + curSiteCondition.NOWCAST_PROBABILITY + '</td><td>' + curSiteCondition.ERROR_TYPE + '</td><td>' + curSiteCondition.BEACH_CONDITIONS + '</td></tr>');
+
+
+				});
+
+				var addedErrorTypes = CorrectExceed + CorrectNonExceed + FalseExceed + FalseNonExceed;
+				var addedPrevDayErrorTypes = prevDayCorrectExceed + prevDayCorrectNonExceed + prevDayFalseExceed + prevDayFalseNonExceed;
+				if (timeFrame !== "7days") {
+					if (addedErrorTypes / totalCount >= 0.5 && addedPrevDayErrorTypes / totalCount >= 0.5) {
+
+						//first pie chart
+						google.charts.load('current', { 'packages': ['corechart'] });
+						google.charts.setOnLoadCallback(drawChart);
+						function drawChart() {
+
+							var data = google.visualization.arrayToDataTable([
+								['', ''],
+								['Correct Exceed', CorrectExceed],
+								['Correct Non-Exceed', CorrectNonExceed],
+								['False Exceed', FalseExceed],
+								['False Non-Exceed', FalseNonExceed],
+								['', 0]
+							]);
+
+							var options = {
+								'title': 'Nowcast Error Types ' + currentOpenSite + ' (Click for stats)',
+								'width': '100%',
+								'height': '100%',
+								'chartArea': { 'width': '100%', 'height': '80%' },
+								'legend': { 'position': 'none' }
+							};
+
+							var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+							chart.draw(data, options);
+
+
+						}
+						//second pie chart
+						google.charts.load('current', { 'packages': ['corechart'] });
+						google.charts.setOnLoadCallback(drawChart2);
+						function drawChart2() {
+
+							var data = google.visualization.arrayToDataTable([
+								['', ''],
+								['Correct Exceed', prevDayCorrectExceed],
+								['Correct Non-Exceed', prevDayCorrectNonExceed],
+								['False Exceed', prevDayFalseExceed],
+								['False Non-Exceed', prevDayFalseNonExceed],
+								['', 0]
+							]);
+
+							var options = {
+								'title': 'Persistence Model Error Types ' + currentOpenSite + ' (Click for stats)',
+								'width': '100%',
+								'height': '100%',
+								'chartArea': { 'width': '100%', 'height': '80%' },
+								'legend': { 'position': 'none' }
+							};
+
+							var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
+
+							chart.draw(data, options);
+						}
+					} else {
+						//$('#piechart, #piechart2selector').hide(); //see if need
+						$('#piechart').html("<div class='alert alert-warning'><strong>Error:</strong> This site does not have enough data entered to generate pie charts.</div>");
+						$('#piechart2').html("");
+					}
+				} else {
+					//$('#piechart, #piechart2selector').hide(); //see if need
+					$('#piechart').html('<div class="alert alert-warning"><strong>Error:</strong> You must select "Whole season" from dropdown to see pie charts.</div>');
+					$('#piechart2').html("");
+				}
+
+
+			}
+			$("#showPieChart").show();
+		}
+		//hereeee
+
+
+
+
+	});
+	changedTimePeriod = false;
+}
+
+function stateDropdownSelectFunction(e) {
+	theChosenState = $(e.target).find('option:selected').attr('value');
+	if (theChosenState == "OH") {
+		$("#changingTabs").load(encodeURI('ohiotabs.html'));
+	} else {
+		$("#changingTabs").load(encodeURI('NY&PAtabs.html'));
+	}
+
+	if (theChosenState == "PA") {
+		PASelected = true;
+		theChosenState = "OH";
+	} else {
+		PASelected = false;
+	}
+	markers.clearLayers();
+	zoomFlag = false;
+	getSites();
+}
+
+function legendButtonFunction() {
+	$("#legend").toggle();
+	map.invalidateSize();
+	return false;
+}
+
+function showPieChartFunction() {
+	if (!beforeChangeTimePeriod || !firstTimeClickButton) {
+		if (!secondClickButton) {
+			$('#showPieChart').html("Back to recent conditions");
+			$('#recentConditionsTable, #timeFrameDropDownHide').hide();
+			$('#piechart, #piechart2').show();
+			secondClickButton = true;
+		} else {
+			$('#showPieChart').html("Nowcast's Accuracy");
+			$('#recentConditionsTable, #timeFrameDropDownHide').show();
+			$('#piechart, #piechart2').hide();
+			secondClickButton = false;
+		}
+	} else {
+		$('#piechart').html('<div class="alert alert-warning"><strong>Error:</strong> You must select "Whole season" from dropdown to see pie charts.</div>');
+		$('#showPieChart').html("Back to recent conditions");
+		$('#recentConditionsTable, #timeFrameDropDownHide').hide();
+		$('#piechart, #piechart2').show();
+		firstTimeClickButton = false;
+		secondClickButton = true;
+	}
+}
+
+function dateQueryButtonFunction() {
+	var $btn = $('#dateQueryButton').button('loading');
+	var query = $('.datepicker').attr('value');
+	querySites(query, $btn);
+}
+
+function processURLparams() {
 	if (URLparams.state && URLparams.lat && URLparams.lng && URLparams.zoom) {
 		theChosenState = URLparams.state.toUpperCase();
 		if (theChosenState == "PA") {
@@ -105,278 +377,7 @@ $(document).ready(function () {
 	} else {
 		$('#selectStatetoBegin').modal('show');
 	}
-	//call initial function to get site list
-	//getSites();
-
-	//check URL arguments (maybe put before getSites?)
-	//checkURLargs();
-
-	//listener for date query
-	$('#dateQueryButton').on('click', function () {
-		var $btn = $(this).button('loading')
-		var query = $('.datepicker').attr('value');
-		querySites(query, $btn);
-	});
-
-	$('#showPieChart').on('click', function () {
-		if (!beforeChangeTimePeriod || !firstTimeClickButton) {
-			if (!secondClickButton) {
-				$('#showPieChart').html("Back to recent conditions");
-				$('#recentConditionsTable, #timeFrameDropDownHide').hide();
-				$('#piechart, #piechart2').show();
-				secondClickButton = true;
-			} else {
-				$('#showPieChart').html("Nowcast's Accuracy");
-				$('#recentConditionsTable, #timeFrameDropDownHide').show();
-				$('#piechart, #piechart2').hide();
-				secondClickButton = false;
-			}
-		} else {
-			$('#piechart').html('<div class="alert alert-warning"><strong>Error:</strong> You must select "Whole season" from dropdown to see pie charts.</div>');
-			$('#showPieChart').html("Back to recent conditions");
-			$('#recentConditionsTable, #timeFrameDropDownHide').hide();
-			$('#piechart, #piechart2').show();
-			firstTimeClickButton = false;
-			secondClickButton = true;
-		}
-	});
-
-	//setup datepicker dates
-	var startDate = new Date("2014-01-01T00:00:00");
-	var today = new Date();
-	var yesterday = new Date();
-	yesterday.setDate(yesterday.getDate() - 1);;
-
-	//instantiate
-	$('.datepicker').datepicker({
-		format: 'yyyy-mm-dd',
-		autoclose: true,
-		todayHighlight: true,
-		startDate: startDate,
-		endDate: today
-	})
-
-	//set datepicker date to yesterday so it has a value
-	$(".datepicker").datepicker("update", yesterday);
-
-	$("#legendButton").click(function () {
-		$("#legend").toggle();
-		map.invalidateSize();
-		return false;
-	});
-
-	$('#stateDropdownSelect').on('changed.bs.select', function (e) {
-		theChosenState = $(e.target).find('option:selected').attr('value');
-		if (theChosenState == "OH") {
-			$("#changingTabs").load(encodeURI('ohiotabs.html'));
-		} else {
-			$("#changingTabs").load(encodeURI('NY&PAtabs.html'));
-		}
-
-		if (theChosenState == "PA") {
-			PASelected = true;
-			theChosenState = "OH";
-		} else {
-			PASelected = false;
-		}
-		markers.clearLayers();
-		zoomFlag = false;
-		getSites();
-	});
-
-	$('#chooseTimeFrame').on('changed.bs.select', function (e) {
-		$("#showPieChart").hide();
-		beforeChangeTimePeriod = false;
-		changedTimePeriod = true;
-		timeFrame = $(e.target).find('option:selected').attr('value');
-
-		//Put in own function (ajax stuff)
-		$.ajax({
-			type: "GET",
-			url: "getconditions2.php",
-			//data: "queryDate=" + queryValue,
-			data: { 'State': theChosenState, 'queryDate': queryDateGlobal, 'timeFrame': timeFrame },
-			success: function (data) {
-				var currentSiteConditionsArray = [];
-				var curConditionWithEcoliArray = [];
-				//parse out conditions to json
-				var conditionsArray = $.parseJSON(data);
-
-				//sort the array by date, descending
-				conditionsArray.sort(function (a, b) {
-					a = new Date(a.DATE);
-					b = new Date(b.DATE);
-					//return a>b ? -1 : a<b ? 1 : 0;
-					return b - a;
-				});
-
-				$.each(conditionsArray, function (i, curCondition) {
-					if (curCondition.BEACH_NAME == currentOpenSite) {
-						currentSiteConditionsArray.push(curCondition);
-					}
-				});
-
-
-
-				if (!$.isEmptyObject(conditionsArray)) {
-
-					$.each(currentSiteConditionsArray, function (i, curConditionWithEcoli) {
-						if (curConditionWithEcoli.LAB_ECOLI) {
-							curConditionWithEcoliArray.push(curConditionWithEcoli);
-						}
-					});
-					$("#recentConditionsTable").find("tr:gt(0)").remove();
-
-					var totalCount = 0;
-					var CorrectExceed = 0;
-					var CorrectNonExceed = 0;
-					var FalseExceed = 0;
-					var FalseNonExceed = 0;
-
-					var prevDayCorrectExceed = 0;
-					var prevDayCorrectNonExceed = 0;
-					var prevDayFalseExceed = 0;
-					var prevDayFalseNonExceed = 0;
-
-					if (!$.isEmptyObject(curConditionWithEcoliArray)) {
-						$.each(curConditionWithEcoliArray, function (i, curConditionWithEcoliCalculations) {
-							if (i < curConditionWithEcoliArray.length - 1) {
-
-								//curSiteCondition.YESTERDAYCHECK = cursiteCondition.LAB_ECOLI - currentSiteConditionsArray[i+1].LAB_ECOLI
-								if (curConditionWithEcoliCalculations.LAB_ECOLI >= 235 && curConditionWithEcoliArray[i + 1].LAB_ECOLI >= 235) {
-									prevDayCorrectExceed++;
-								}
-								if (curConditionWithEcoliCalculations.LAB_ECOLI < 235 && curConditionWithEcoliArray[i + 1].LAB_ECOLI < 235) {
-									prevDayCorrectNonExceed++;
-								}
-								if (curConditionWithEcoliCalculations.LAB_ECOLI < 235 && curConditionWithEcoliArray[i + 1].LAB_ECOLI >= 235) {
-									prevDayFalseExceed++;
-								}
-								if (curConditionWithEcoliCalculations.LAB_ECOLI >= 235 && curConditionWithEcoliArray[i + 1].LAB_ECOLI < 235) {
-									prevDayFalseNonExceed++;
-								}
-							}
-						});
-					}
-
-
-					$.each(currentSiteConditionsArray, function (i, curSiteCondition) {
-
-
-						//omit empty data and only do it if there is enough data
-
-						totalCount++;
-						if (curSiteCondition.ERROR_TYPE == "Correct Exceed") {
-							CorrectExceed++;
-						}
-						if (curSiteCondition.ERROR_TYPE == "Correct Non-Exceed") {
-							CorrectNonExceed++;
-						}
-						if (curSiteCondition.ERROR_TYPE == "False Exceed") {
-							FalseExceed++;
-						}
-						if (curSiteCondition.ERROR_TYPE == "False Non-Exceed") {
-							FalseNonExceed++;
-						}
-
-
-
-						$('#recentConditionsTable').append('<tr><td>' + curSiteCondition.DATE + '</td><td>' + curSiteCondition.LAB_ECOLI + '</td><td>' + curSiteCondition.NOWCAST_ECOLI + '</td><td>' + curSiteCondition.NOWCAST_PROBABILITY + '</td><td>' + curSiteCondition.ERROR_TYPE + '</td><td>' + curSiteCondition.BEACH_CONDITIONS + '</td></tr>');
-
-
-					});
-
-					var addedErrorTypes = CorrectExceed + CorrectNonExceed + FalseExceed + FalseNonExceed;
-					var addedPrevDayErrorTypes = prevDayCorrectExceed + prevDayCorrectNonExceed + prevDayFalseExceed + prevDayFalseNonExceed;
-					if (timeFrame !== "7days") {
-						if (addedErrorTypes / totalCount >= 0.5 && addedPrevDayErrorTypes / totalCount >= 0.5) {
-
-							//first pie chart
-							google.charts.load('current', { 'packages': ['corechart'] });
-							google.charts.setOnLoadCallback(drawChart);
-							function drawChart() {
-
-								var data = google.visualization.arrayToDataTable([
-									['', ''],
-									['Correct Exceed', CorrectExceed],
-									['Correct Non-Exceed', CorrectNonExceed],
-									['False Exceed', FalseExceed],
-									['False Non-Exceed', FalseNonExceed],
-									['', 0]
-								]);
-
-								var options = {
-									'title': 'Nowcast Error Types ' + currentOpenSite + ' (Click for stats)',
-									'width': '100%',
-									'height': '100%',
-									'chartArea': { 'width': '100%', 'height': '80%' },
-									'legend': { 'position': 'none' }
-								};
-
-								var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-
-								chart.draw(data, options);
-
-
-							}
-							//second pie chart
-							google.charts.load('current', { 'packages': ['corechart'] });
-							google.charts.setOnLoadCallback(drawChart2);
-							function drawChart2() {
-
-								var data = google.visualization.arrayToDataTable([
-									['', ''],
-									['Correct Exceed', prevDayCorrectExceed],
-									['Correct Non-Exceed', prevDayCorrectNonExceed],
-									['False Exceed', prevDayFalseExceed],
-									['False Non-Exceed', prevDayFalseNonExceed],
-									['', 0]
-								]);
-
-								var options = {
-									'title': 'Persistence Model Error Types ' + currentOpenSite + ' (Click for stats)',
-									'width': '100%',
-									'height': '100%',
-									'chartArea': { 'width': '100%', 'height': '80%' },
-									'legend': { 'position': 'none' }
-								};
-
-								var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
-
-								chart.draw(data, options);
-							}
-						} else {
-							//$('#piechart, #piechart2selector').hide(); //see if need
-							$('#piechart').html("<div class='alert alert-warning'><strong>Error:</strong> This site does not have enough data entered to generate pie charts.</div>");
-							$('#piechart2').html("");
-						}
-					} else {
-						//$('#piechart, #piechart2selector').hide(); //see if need
-						$('#piechart').html('<div class="alert alert-warning"><strong>Error:</strong> You must select "Whole season" from dropdown to see pie charts.</div>');
-						$('#piechart2').html("");
-					}
-
-
-				}
-				$("#showPieChart").show();
-			}
-			//hereeee
-
-
-
-
-		});
-		changedTimePeriod = false;
-	});
-	//marker click override listener
-	markers.on('click', onMarkerClick);
-
-	/*map.on('click', function(e) {
-		alert("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng)
-	});*/
-
-	//end document ready function
-});
+}
 
 function getAllUrlParams() {
 	// get query string from url (optional) or window

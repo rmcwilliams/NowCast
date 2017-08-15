@@ -33,26 +33,82 @@ $(document).ready(function () {
 	map.addLayer(markers);
 	var params = {};
 	URLparams = getAllUrlParams();
-	/*if ("predState" in getAllUrlParams()) {
-		
-		theChosenState = getAllUrlParams().predState.toUpperCase();
-			if (theChosenState == "OH") {
-				$("#changingTabs").load(encodeURI('ohiotabs.html'));
-			} else {
-				$("#changingTabs").load(encodeURI('NY&PAtabs.html'));
-			}
-			
-			if (theChosenState == "PA") {
-				PASelected = true;
-				theChosenState = "OH";
-			} else {
-				PASelected = false;
-			}
-			markers.clearLayers();
-			zoomFlag = false;
-			getSites();
-	}*/
+	processURLparams();
+	//call initial function to get site list
+	//getSites();
 
+	//listener for date query
+	$('#dateQueryButton').on('click', function () {
+		dateQueryButtonFunction();
+	});
+
+	//setup datepicker dates
+	var startDate = new Date("2014-01-01T00:00:00");
+	var today = new Date();
+	var yesterday = new Date();
+	yesterday.setDate(yesterday.getDate() - 1);;
+
+	//instantiate
+	$('.datepicker').datepicker({
+		format: 'yyyy-mm-dd',
+		autoclose: true,
+		todayHighlight: true,
+		startDate: startDate,
+		endDate: today
+	})
+
+	//set datepicker date to yesterday so it has a value
+	$(".datepicker").datepicker("update", yesterday);
+
+	$("#legendButton").click(function () {
+		legendButtonFunction();
+	});
+
+	$('#stateDropdownSelect').on('changed.bs.select', function (e) {
+		stateDropdownSelectFunction(e);
+	});
+
+	//marker click override listener
+	markers.on('click', onMarkerClick);
+
+	/*map.on('click', function(e) {
+		alert("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng)
+	});*/
+	//end document ready function
+});
+
+function stateDropdownSelectFunction(e) {
+	theChosenState = $(e.target).find('option:selected').attr('value');
+	if (theChosenState == "OH") {
+		$("#changingTabs").load(encodeURI('ohiotabs.html'));
+	} else {
+		$("#changingTabs").load(encodeURI('NY&PAtabs.html'));
+	}
+
+	if (theChosenState == "PA") {
+		PASelected = true;
+		theChosenState = "OH";
+	} else {
+		PASelected = false;
+	}
+	markers.clearLayers();
+	zoomFlag = false;
+	getSites();
+}
+
+function legendButtonFunction() {
+	$("#legend").toggle();
+	map.invalidateSize();
+	return false;
+}
+
+function dateQueryButtonFunction() {
+	var $btn = $('#dateQueryButton').button('loading');
+	var query = $('.datepicker').attr('value');
+	querySites(query, $btn);
+}
+
+function processURLparams() {
 	if (URLparams.state && URLparams.lat && URLparams.lng && URLparams.zoom) {
 
 		theChosenState = URLparams.state.toUpperCase();
@@ -103,70 +159,7 @@ $(document).ready(function () {
 	} else {
 		$('#selectStatetoBegin').modal('show');
 	}
-	//call initial function to get site list
-	//getSites();
-
-	//check URL arguments (maybe put before getSites?)
-	//checkURLargs();
-
-	//listener for date query
-	$('#dateQueryButton').on('click', function () {
-		var $btn = $(this).button('loading')
-		var query = $('.datepicker').attr('value');
-		querySites(query, $btn);
-	});
-
-	//setup datepicker dates
-	var startDate = new Date("2014-01-01T00:00:00");
-	var today = new Date();
-	var yesterday = new Date();
-	yesterday.setDate(yesterday.getDate() - 1);;
-
-	//instantiate
-	$('.datepicker').datepicker({
-		format: 'yyyy-mm-dd',
-		autoclose: true,
-		todayHighlight: true,
-		startDate: startDate,
-		endDate: today
-	})
-
-	//set datepicker date to yesterday so it has a value
-	$(".datepicker").datepicker("update", yesterday);
-
-	$("#legendButton").click(function () {
-		$("#legend").toggle();
-		map.invalidateSize();
-		return false;
-	});
-
-	$('#stateDropdownSelect').on('changed.bs.select', function (e) {
-		theChosenState = $(e.target).find('option:selected').attr('value')
-		if (theChosenState == "OH") {
-			$("#changingTabs").load(encodeURI('ohiotabs.html'));
-		} else {
-			$("#changingTabs").load(encodeURI('NY&PAtabs.html'));
-		}
-
-		if (theChosenState == "PA") {
-			PASelected = true;
-			theChosenState = "OH";
-		} else {
-			PASelected = false;
-		}
-		markers.clearLayers();
-		zoomFlag = false;
-		getSites();
-	});
-
-	//marker click override listener
-	markers.on('click', onMarkerClick);
-
-	/*map.on('click', function(e) {
-		alert("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng)
-	});*/
-	//end document ready function
-});
+}
 
 function getAllUrlParams() {
 
