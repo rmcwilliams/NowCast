@@ -40,7 +40,7 @@ $(document).ready(function () {
 	markers = new L.FeatureGroup();
 	map.addLayer(markers);
 	var params = {};
-	getAllUrlParams();
+	URLparams = getAllUrlParams();
 	/*if ("predState" in getAllUrlParams()) {
 		
 		theChosenState = getAllUrlParams().predState.toUpperCase();
@@ -435,7 +435,7 @@ function getAllUrlParams() {
 			}
 		}
 	}
-	URLparams = obj;
+	return obj;
 	// return obj;
 }
 
