@@ -1,0 +1,26 @@
+---------- Forwarded message ----------
+From: Brady, Amie M <amgbrady@usgs.gov>
+Date: Fri, Aug 18, 2017 at 10:20 AM
+Subject: Update to nowcast website
+To: "M. Peter deVries" <pdevries@usgs.gov>
+
+
+Pete,
+
+I just found out that one of our cooperators has used a different model for the entire summer. Can you please update the website as described below? I know it's late in the season, but I would really like it to be correct.
+
+Thanks,
+Amie
+
+
+Site: Nickel Plate Details
+Model information remains the same
+Explanatory variables need to change to the following:
+Turbidity
+Day of the year
+Wave height
+Rainfall in the previous 48 hours, Lorain County Regional Airport, weighted
+Rainfall in the previous 72 hours, Lorain County Regional Airport
+Change in barometric pressure, Lorain County Regional Airport
+
+
