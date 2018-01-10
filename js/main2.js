@@ -19,10 +19,10 @@ $(document).ready(function () {
 	//$('#popupModal').modal('show');
 	$("#changingTabs").html("<div class='alert alert-warning'>Please select a state first.</div>");
 	//initialize basemap
-	var ESRIOceanBasemap = L.tileLayer("https://services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}", {
+	var worldImagery = L.tileLayer("https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
 		attribution: 'Copyright: &copy; 2013 Esri, DeLorme, NAVTEQ'
 	});
-	var ESRIOceanReference = L.tileLayer("https://services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}", {
+	var worldBoundAndPlacesRef = L.tileLayer("https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}", {
 		attribution: 'Copyright: &copy; 2013 Esri, DeLorme, NAVTEQ'
 	});
 
@@ -30,10 +30,33 @@ $(document).ready(function () {
 	map = new L.Map('map', {
 		center: new L.LatLng(42.75, -75.5),
 		zoom: 7,
-		layers: [ESRIOceanBasemap, ESRIOceanReference],
+		layers: [worldImagery, worldBoundAndPlacesRef],
 		attributionControl: false,
 		zoomControl: false
 	});
+	
+	var precipitation = L.tileLayer('https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=d22d9a6a3ff2aa523d5917bbccc89211', {
+		maxZoom: 18,
+		attribution: '&copy; <a href="https://owm.io">VANE</a>'
+	});
+	
+	var wind = L.tileLayer('https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=d22d9a6a3ff2aa523d5917bbccc89211', {
+		maxZoom: 18,
+		attribution: '&copy; <a href="https://owm.io">VANE</a>'
+    });
+	
+	var clouds = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=d22d9a6a3ff2aa523d5917bbccc89211', {
+		maxZoom: 18,
+		attribution: '&copy; <a href="https://owm.io">VANE</a>'
+    });
+	
+	var overlayMaps = {
+		"Precipitation": precipitation,
+		"Wind": wind,
+		"Clouds": clouds
+	};
+
+	L.control.layers(null, overlayMaps).addTo(map);
 
 	markers = new L.FeatureGroup();
 	map.addLayer(markers);
@@ -93,24 +116,24 @@ $(document).ready(function () {
 function buildDropDown() {
 	function getSitesDropDown() {
 
-		$.ajax({
-			type: "GET",
-			url: "getbeaches.php",
-			data: {},
-			success: function (data) {
+    $.ajax({
+        type: "GET",
+        url: "getbeaches.php",
+        data: {},
+        success: function (data) {
 
-				//write sites to global object
-				var siteArray = $.parseJSON(data);
+            //write sites to global object
+            var siteArray = $.parseJSON(data);
 
-				//call drawSitesDropDown
-				drawSitesDropDown(siteArray);
-			},
-			complete: function () {
-			}
-		});
+            //call drawSitesDropDown
+            drawSitesDropDown(siteArray);
+        },
+        complete: function () {
+        }
+    });
 
 
-	}
+}
 
 	function drawSitesDropDown(siteArray) {
 
@@ -118,15 +141,15 @@ function buildDropDown() {
 		$.each(siteArray, function (i, curSite) {
 
 			if (curSite.STATE && curSite.STATE !== 'na' && $('#stateDropdownSelect option[value="' + curSite.STATE + '"]').length == 0) {
-				//add it to state drop down
-				$('#stateDropdownSelect').append($('<option></option>').attr('value', curSite.STATE).text(curSite.STATE));
-			}
+					//add it to state drop down
+					$('#stateDropdownSelect').append($('<option></option>').attr('value',curSite.STATE).text(curSite.STATE));
+				 }
 		});
 
 
-		$('.selectpicker').selectpicker('refresh');
+	$('.selectpicker').selectpicker('refresh');
 	}
-	getSitesDropDown();
+getSitesDropDown();
 }
 
 function chooseTimeFrameFunction(e) {
@@ -512,7 +535,7 @@ function onMarkerClick(e) {
 	}
 
 	//set out of season beach conditions in marker popup
-	function dateCompare(date1, date2) {
+	function dateCompare(date1, date2){
 		return new Date(date2) > new Date(date1);
 	}
 	if ((e.layer.options.siteData.WEB_ENABLED == 2) && (dateCompare(queryDateGlobal, queryDateGlobal.substring(0, queryDateGlobal.indexOf('-')) + '-05-28') || dateCompare(queryDateGlobal.substring(0, queryDateGlobal.indexOf('-')) + '-09-03', queryDateGlobal))) {
@@ -635,23 +658,23 @@ function drawSites(siteArray) {
 			siteData: curSite
 		});
 
-		if (curMarker.options.siteData.STATE == theChosenState) {
-			//finally, create the default marker
-			var curMarkerSymbol = L.AwesomeMarkers.icon({
-				prefix: 'fa',
-				icon: '',
-				markerColor: 'lightgray'
-			});
+			if (curMarker.options.siteData.STATE == theChosenState) {
+				//finally, create the default marker
+				var curMarkerSymbol = L.AwesomeMarkers.icon({
+					prefix: 'fa',
+					icon: '',
+					markerColor: 'lightgray'
+				});
 
-			//set icon
-			curMarker.setIcon(curMarkerSymbol);
+				//set icon
+				curMarker.setIcon(curMarkerSymbol);
 
-			//add to map
-			markers.addLayer(curMarker);
+				//add to map
+				markers.addLayer(curMarker);
 
-			//push to array for zooming
-			markerArray.push([parseFloat(curSite.LATITUDE), parseFloat(curSite.LONGITUDE)]);
-		}
+				//push to array for zooming
+				markerArray.push([parseFloat(curSite.LATITUDE), parseFloat(curSite.LONGITUDE)]);
+			}
 	});
 
 	$('.selectpicker').selectpicker('refresh');

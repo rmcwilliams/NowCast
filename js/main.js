@@ -11,18 +11,18 @@ $(document).ready(function () {
     //$('#popupModal').modal('show');
     $("#changingTabs").html("<div class='alert alert-warning'>Please select a state first.</div>");
     //initialize basemap
-    var ESRIOceanBasemap = L.tileLayer("https://services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}", {
-        attribution: 'Copyright: &copy; 2013 Esri, DeLorme, NAVTEQ'
-    });
-    var ESRIOceanReference = L.tileLayer("https://services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}", {
-        attribution: 'Copyright: &copy; 2013 Esri, DeLorme, NAVTEQ'
-    });
+	var worldImagery = L.tileLayer("https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+		attribution: 'Copyright: &copy; 2013 Esri, DeLorme, NAVTEQ'
+	});
+	var worldBoundAndPlacesRef = L.tileLayer("https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}", {
+		attribution: 'Copyright: &copy; 2013 Esri, DeLorme, NAVTEQ'
+	});
 
     //initialize map
     map = new L.Map('map', {
         center: new L.LatLng(42.75, -75.5),
         zoom: 7,
-        layers: [ESRIOceanBasemap, ESRIOceanReference],
+        layers: [worldImagery, worldBoundAndPlacesRef],
         attributionControl: false,
         zoomControl: false
 
@@ -77,43 +77,43 @@ $(document).ready(function () {
 });
 
 function buildDropDown() {
-    function getSitesDropDown() {
-        //on();
+	function getSitesDropDown() {
+    //on();
 
-        //get list of beaches
-        $.ajax({
-            type: "GET",
-            url: "getbeaches.php",
-            data: {/* 'State': theChosenState */ }, //can take this out pretty sure, maybe take theState variable out of php scripts (such as in getbeaches.php)
-            success: function (data) {
+    //get list of beaches
+    $.ajax({
+        type: "GET",
+        url: "getbeaches.php",
+        data: {/* 'State': theChosenState */}, //can take this out pretty sure, maybe take theState variable out of php scripts (such as in getbeaches.php)
+        success: function (data) {
 
-                //write sites to global object
-                var siteArray = $.parseJSON(data);
+            //write sites to global object
+            var siteArray = $.parseJSON(data);
 
-                //call drawSitesDropDown
-                drawSitesDropDown(siteArray);
-            },
-            complete: function () {
-                /*//run initial query
-                 var currentDay = moment().format('YYYY-MM-DD');
-     
-                 //commented out for debugging
-                 querySites(currentDay);
-                 //querySites("2014-07-28"); */                      //DON'T THINK YOU NEED THIS STUFF
-            }
-        });
+            //call drawSitesDropDown
+            drawSitesDropDown(siteArray);
+        },
+        complete: function () {
+           /*//run initial query
+            var currentDay = moment().format('YYYY-MM-DD');
 
-
-    }
-
-    function drawSitesDropDown(siteArray) {
+            //commented out for debugging
+            querySites(currentDay);
+            //querySites("2014-07-28"); */                      //DON'T THINK YOU NEED THIS STUFF
+        }
+    });
 
 
-        //create layerGroup for sites and add to map
-        //markerArray = []; DON'T NEED
+}
 
-        //loop over list of beaches
-        $.each(siteArray, function (i, curSite) {
+	function drawSitesDropDown(siteArray) {
+
+
+		//create layerGroup for sites and add to map
+		//markerArray = []; DON'T NEED
+
+		//loop over list of beaches
+		$.each(siteArray, function (i, curSite) {
 
 			/* var customMarker = L.Marker.extend({
 				options: {
@@ -129,16 +129,16 @@ function buildDropDown() {
 				curSite.STATE = 'OH';
 			}*/
 
-            //add sites
+			//add sites
+			
+			
+			//var curMarker = new customMarker([parseFloat(curSite.LATITUDE), parseFloat(curSite.LONGITUDE)], { siteData: curSite });  DON'T NEED (change stuff below to curSite)
 
-
-            //var curMarker = new customMarker([parseFloat(curSite.LATITUDE), parseFloat(curSite.LONGITUDE)], { siteData: curSite });  DON'T NEED (change stuff below to curSite)
-
-            if (curSite.STATE && curSite.STATE !== 'na' && $('#stateDropdownSelect option[value="' + curSite.STATE + '"]').length == 0) {
-                //add it
-                $('#stateDropdownSelect').append($('<option></option>').attr('value', curSite.STATE).text(curSite.STATE));
-            }
-
+			if (curSite.STATE && curSite.STATE !== 'na' && $('#stateDropdownSelect option[value="' + curSite.STATE + '"]').length == 0) {
+					//add it
+					$('#stateDropdownSelect').append($('<option></option>').attr('value',curSite.STATE).text(curSite.STATE));
+				 }
+			
 			/*if (curSite.STATE == theChosenState) {
 				//finally, create the default marker
 				var curMarkerSymbol = L.AwesomeMarkers.icon({
@@ -156,15 +156,15 @@ function buildDropDown() {
 				//push to array for zooming
 				markerArray.push([parseFloat(curSite.LATITUDE), parseFloat(curSite.LONGITUDE)]);
 			}*/ 																//DON'T NEED
-        });
+		});
 
 
-        $('.selectpicker').selectpicker('refresh');
-        //off();
-    }
-    //on();
-    getSitesDropDown();
-    //off();
+	$('.selectpicker').selectpicker('refresh');
+	//off();
+	}
+//on();
+getSitesDropDown();
+//off();
 }
 
 function stateDropdownSelectFunction(e) {
@@ -467,10 +467,10 @@ function drawSites(siteArray) {
 		}*/
 
         //add sites
-
-        //move this into its own function so not called every time:
-
-        var curMarker = new customMarker([parseFloat(curSite.LATITUDE), parseFloat(curSite.LONGITUDE)], { siteData: curSite });
+		
+		//move this into its own function so not called every time:
+        
+		var curMarker = new customMarker([parseFloat(curSite.LATITUDE), parseFloat(curSite.LONGITUDE)], { siteData: curSite });
 		/*
 		if (curMarker.options.siteData.STATE && curMarker.options.siteData.STATE !== 'na' && $('#stateDropdownSelect option[value="' + curMarker.options.siteData.STATE + '"]').length == 0) {
 				//add it
@@ -494,23 +494,23 @@ function drawSites(siteArray) {
             //push to array for zooming
             markerArray.push([parseFloat(curSite.LATITUDE), parseFloat(curSite.LONGITUDE)]);
         }
-    });
+	});
 
 
-    $('.selectpicker').selectpicker('refresh');
+$('.selectpicker').selectpicker('refresh');
 
-    //check if we've already zoomed
-    if (!zoomFlag) {
-        //zoom to points
-        var bounds = L.latLngBounds(markerArray);
-        map.fitBounds(bounds, { padding: [100, 100] });//works!
-        // Calculate the offset
-        //var offset = map.getSize().x*-0.1;
-        // Then move the map
-        //setTimeout(function(){ map.panBy(new L.Point(-offset, 0), {animate: true}); }, 500);
-    }
-    zoomFlag = true;
-    off();
+//check if we've already zoomed
+if (!zoomFlag) {
+    //zoom to points
+    var bounds = L.latLngBounds(markerArray);
+    map.fitBounds(bounds, { padding: [100, 100] });//works!
+    // Calculate the offset
+    //var offset = map.getSize().x*-0.1;
+    // Then move the map
+    //setTimeout(function(){ map.panBy(new L.Point(-offset, 0), {animate: true}); }, 500);
+}
+zoomFlag = true;
+off();
 }
 
 function querySites(queryValue, $btn) {
