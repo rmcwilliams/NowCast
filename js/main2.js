@@ -13,11 +13,13 @@ var siteArray;
 var secondClickButton = false;
 var beforeChangeTimePeriod = true;
 var firstTimeClickButton = true;
+var loadAllSites = true;
+var stateOfClickedMarker;
 
 //main document ready function
 $(document).ready(function () {
 	//$('#popupModal').modal('show');
-	$("#changingTabs").html("<div class='alert alert-warning'>Please select a state first.</div>");
+	$("#changingTabs").html("<div class='alert alert-warning'>Please click on a point first.</div>");
 	//initialize basemap
 	var worldImagery = L.tileLayer("https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
 		attribution: 'Copyright: &copy; 2013 Esri, DeLorme, NAVTEQ'
@@ -95,11 +97,6 @@ $(document).ready(function () {
 		legendButtonFunction();
 	});
 
-	$('#stateDropdownSelect').on('changed.bs.select', function (e) {
-		$(".datepicker").datepicker("update", yesterday);
-		stateDropdownSelectFunction(e);
-	});
-
 	$('#chooseTimeFrame').on('changed.bs.select', function (e) {
 		chooseTimeFrameFunction(e);
 	});
@@ -112,45 +109,6 @@ $(document).ready(function () {
 
 	//end document ready function
 });
-
-function buildDropDown() {
-	function getSitesDropDown() {
-
-    $.ajax({
-        type: "GET",
-        url: "getbeaches.php",
-        data: {},
-        success: function (data) {
-
-            //write sites to global object
-            var siteArray = $.parseJSON(data);
-
-            //call drawSitesDropDown
-            drawSitesDropDown(siteArray);
-        },
-        complete: function () {
-        }
-    });
-
-
-}
-
-	function drawSitesDropDown(siteArray) {
-
-		//loop over list of beaches
-		$.each(siteArray, function (i, curSite) {
-
-			if (curSite.STATE && curSite.STATE !== 'na' && $('#stateDropdownSelect option[value="' + curSite.STATE + '"]').length == 0) {
-					//add it to state drop down
-					$('#stateDropdownSelect').append($('<option></option>').attr('value',curSite.STATE).text(curSite.STATE));
-				 }
-		});
-
-
-	$('.selectpicker').selectpicker('refresh');
-	}
-getSitesDropDown();
-}
 
 function chooseTimeFrameFunction(e) {
 	$("#showPieChart").hide();
@@ -323,18 +281,6 @@ function chooseTimeFrameFunction(e) {
 	changedTimePeriod = false;
 }
 
-function stateDropdownSelectFunction(e) {
-	theChosenState = $(e.target).find('option:selected').attr('value');
-	if (theChosenState == "OH") {
-		$("#changingTabs").load(encodeURI('ohiotabs.html'));
-	} else {
-		$("#changingTabs").load(encodeURI('NY&PAtabs.html'));
-	}
-	markers.clearLayers();
-	zoomFlag = false;
-	getSites();
-}
-
 function legendButtonFunction() {
 	$("#legend").toggle();
 	map.invalidateSize();
@@ -371,6 +317,7 @@ function dateQueryButtonFunction() {
 
 function processURLparams() {
 	if (URLparams.state && URLparams.lat && URLparams.lng && URLparams.zoom) {
+		loadAllSites = false;
 		theChosenState = URLparams.state.toUpperCase();
 		map.setView([URLparams.lat, URLparams.lng], URLparams.zoom)
 		zoomFlag = true;
@@ -395,8 +342,8 @@ function processURLparams() {
 
 		getSites();
 	} else if (URLparams.state) {
+		loadAllSites = false;
 		theChosenState = URLparams.state.toUpperCase();
-		$('#stateDropdownSelect').prop('title', '<font color="#333">' + theChosenState + '</font>');
 		if (theChosenState == "OH") {
 			$("#changingTabs").load(encodeURI('ohiotabs.html'));
 		} else {
@@ -404,7 +351,7 @@ function processURLparams() {
 		}
 		getSites();
 	} else {
-		$('#selectStatetoBegin').modal('show');
+		getSites();
 	}
 }
 
@@ -477,8 +424,6 @@ function off() {
 	document.getElementById("overlay").style.display = "none";
 }
 
-buildDropDown();
-
 function displayMapAt(lat, lon, zoom) {
 	$("#gmap").html(
 		"<iframe id=\"map_frame\" " +
@@ -513,6 +458,16 @@ function onMarkerClick(e) {
 		map.panTo(e.latlng);
 	}
 	console.log("Marker clicked", e.layer.options.siteData.currentConditions.BEACH_CONDITIONS, setPopupColor(e.layer.options.siteData.currentConditions.BEACH_CONDITIONS), e.layer.options.siteData);
+	if (loadAllSites && e.layer.options.siteData.STATE !== stateOfClickedMarker) {
+		console.log("changed the tabs!");
+		if (e.layer.options.siteData.STATE == "OH") {
+			$("#changingTabs").load(encodeURI('ohiotabs.html'));
+		} else {
+			$("#changingTabs").load(encodeURI('NY&PAtabs.html')); //maybe make this part only run if changing to ohio or from ohio? see if necessary.
+		}
+	}
+
+	stateOfClickedMarker = e.layer.options.siteData.STATE;
 
 	if (e.layer.options.siteData.STATE == "OH" || e.layer.options.siteData.STATE == "PA") {
 		$('#3rdTab').html('<a href="#tab3" data-toggle="tab"><i class="fa fa-info-circle"></i>&nbsp;&nbsp;<span class="beachName"></span> Details</a>');
@@ -657,7 +612,7 @@ function drawSites(siteArray) {
 		var curMarker = new customMarker([parseFloat(curSite.LATITUDE), parseFloat(curSite.LONGITUDE)], {
 			siteData: curSite
 		});
-
+		if (!loadAllSites) {
 			if (curMarker.options.siteData.STATE == theChosenState) {
 				//finally, create the default marker
 				var curMarkerSymbol = L.AwesomeMarkers.icon({
@@ -675,9 +630,26 @@ function drawSites(siteArray) {
 				//push to array for zooming
 				markerArray.push([parseFloat(curSite.LATITUDE), parseFloat(curSite.LONGITUDE)]);
 			}
+		} else {
+			//finally, create the default marker
+				var curMarkerSymbol = L.AwesomeMarkers.icon({
+					prefix: 'fa',
+					icon: '',
+					markerColor: 'lightgray'
+				});
+
+				//set icon
+				curMarker.setIcon(curMarkerSymbol);
+
+				//add to map
+				markers.addLayer(curMarker);
+
+				//push to array for zooming
+				markerArray.push([parseFloat(curSite.LATITUDE), parseFloat(curSite.LONGITUDE)]);
+		}
 	});
 
-	$('.selectpicker').selectpicker('refresh');
+	//$('.selectpicker').selectpicker('refresh'); pretty sure can remove since don't need state drop down any more
 
 	//check if we've already zoomed
 	if (!zoomFlag) {
@@ -687,7 +659,7 @@ function drawSites(siteArray) {
 			padding: [100, 100]
 		});
 	}
-	zoomFlag = true;
+	//zoomFlag = true; //don't think you need this
 	off();
 }
 
