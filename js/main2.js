@@ -19,7 +19,7 @@ var stateOfClickedMarker;
 //main document ready function
 $(document).ready(function () {
 	//$('#popupModal').modal('show');
-	$("#changingTabs").html("<div class='alert alert-warning'>Please click on a point first.</div>");
+	$("#changingTabs").html("<div class='alert alert-warning'>Please click on a point first so that you get the appropriate information for your state.</div>");
 	//initialize basemap
 	var worldImagery = L.tileLayer("https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
 		attribution: 'Copyright: &copy; 2013 Esri, DeLorme, NAVTEQ'
@@ -58,7 +58,7 @@ $(document).ready(function () {
 		"Clouds": clouds
 	};
 
-	L.control.layers(null, overlayMaps).addTo(map);
+	var testVar = L.control.layers(null, overlayMaps).addTo(map);
 
 	markers = new L.FeatureGroup();
 	map.addLayer(markers);
@@ -79,7 +79,7 @@ $(document).ready(function () {
 	var startDate = new Date("2014-01-01T00:00:00");
 	var today = new Date();
 	var yesterday = new Date();
-	yesterday.setDate(yesterday.getDate() - 1);;
+	yesterday.setDate(yesterday.getDate() - 1);
 
 	//instantiate
 	$('.datepicker').datepicker({
@@ -109,7 +109,6 @@ $(document).ready(function () {
 
 	//end document ready function
 });
-
 function chooseTimeFrameFunction(e) {
 	$("#showPieChart").hide();
 	beforeChangeTimePeriod = false;
@@ -193,7 +192,6 @@ function chooseTimeFrameFunction(e) {
 				var addedPrevDayErrorTypes = prevDayCorrectExceed + prevDayCorrectNonExceed + prevDayFalseExceed + prevDayFalseNonExceed;
 				if (timeFrame !== "7days") {
 					if (addedErrorTypes / totalCount >= 0.5 && addedPrevDayErrorTypes / totalCount >= 0.5) {
-
 						//first pie chart (Nowcast's accuracy)
 						google.charts.load('current', {
 							'packages': ['corechart']
@@ -312,6 +310,11 @@ function showPieChartFunction() {
 function dateQueryButtonFunction() {
 	var $btn = $('#dateQueryButton').button('loading');
 	var query = $('.datepicker').attr('value');
+	if (query !== moment().format('YYYY-MM-DD')) {
+		$('.leaflet-control-layers').hide();
+	} else {
+		$('.leaflet-control-layers').show();
+	}
 	querySites(query, $btn);
 }
 
@@ -331,7 +334,7 @@ function processURLparams() {
 		document.getElementById('map').style.cursor = 'default';
 		panToPoint = false;
 
-		$("#sitelink").html("<a href='https://ny.water.usgs.gov/maps/nowcast/' style='text-decoration: none;color:red;'>Powered by <font color='black'>Nowcast Beach Status</font>. Click here to see the full map of beaches.</a>");
+		$("#sitelink").html("<a href='https://ny.water.usgs.gov/maps/nowcast/' style='text-decoration: none;color:red;'>Powered by <font color='black'>Nowcast Status</font>. Click here to see the full map of beaches.</a>");
 		$("#usgsfooter, #aboutModal, #legend, #topnav").remove();
 		$("#body").css("padding-top", "0px");
 		$("html, body, #map").css({
