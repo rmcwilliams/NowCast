@@ -15,6 +15,9 @@ var beforeChangeTimePeriod = true;
 var firstTimeClickButton = true;
 var loadAllSites = true;
 var stateOfClickedMarker;
+var precipitation;
+var wind;
+var clouds;
 
 //main document ready function
 $(document).ready(function () {
@@ -37,17 +40,17 @@ $(document).ready(function () {
 		zoomControl: false
 	});
 	
-	var precipitation = L.tileLayer('https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=d22d9a6a3ff2aa523d5917bbccc89211', {
+	precipitation = L.tileLayer('https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=d22d9a6a3ff2aa523d5917bbccc89211', {
 		maxZoom: 18,
 		attribution: '&copy; <a href="https://owm.io">VANE</a>'
 	});
 	
-	var wind = L.tileLayer('https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=d22d9a6a3ff2aa523d5917bbccc89211', {
+	wind = L.tileLayer('https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=d22d9a6a3ff2aa523d5917bbccc89211', {
 		maxZoom: 18,
 		attribution: '&copy; <a href="https://owm.io">VANE</a>'
     });
 	
-	var clouds = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=d22d9a6a3ff2aa523d5917bbccc89211', {
+	clouds = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=d22d9a6a3ff2aa523d5917bbccc89211', {
 		maxZoom: 18,
 		attribution: '&copy; <a href="https://owm.io">VANE</a>'
     });
@@ -109,6 +112,13 @@ $(document).ready(function () {
 
 	//end document ready function
 });
+function offSeason() {
+	function dateCompare(date1, date2){
+		return new Date(date2) > new Date(date1);
+	}
+	return dateCompare(queryDateGlobal, queryDateGlobal.substring(0, queryDateGlobal.indexOf('-')) + '-05-10') || dateCompare(queryDateGlobal.substring(0, queryDateGlobal.indexOf('-')) + '-09-20', queryDateGlobal);
+}
+
 function chooseTimeFrameFunction(e) {
 	$("#showPieChart").hide();
 	beforeChangeTimePeriod = false;
@@ -161,7 +171,6 @@ function chooseTimeFrameFunction(e) {
 						if (curCondition.ERROR_TYPE == "False Non-Exceed") {
 							FalseNonExceed++;
 						}
-
 						$('#recentConditionsTable').append('<tr><td>' + curCondition.DATE + '</td><td>' + curCondition.LAB_ECOLI + '</td><td>' + curCondition.NOWCAST_ECOLI + '</td><td>' + curCondition.NOWCAST_PROBABILITY + '</td><td>' + curCondition.ERROR_TYPE + '</td><td>' + curCondition.BEACH_CONDITIONS + '</td></tr>');
 						if (curCondition.LAB_ECOLI) {
 							curConditionWithEcoliArray.push(curCondition);
@@ -191,7 +200,8 @@ function chooseTimeFrameFunction(e) {
 				var addedErrorTypes = CorrectExceed + CorrectNonExceed + FalseExceed + FalseNonExceed;
 				var addedPrevDayErrorTypes = prevDayCorrectExceed + prevDayCorrectNonExceed + prevDayFalseExceed + prevDayFalseNonExceed;
 				if (timeFrame !== "7days") {
-					if (addedErrorTypes / totalCount >= 0.5 && addedPrevDayErrorTypes / totalCount >= 0.5) {
+					//if (addedErrorTypes / totalCount >= 0.5 && addedPrevDayErrorTypes / totalCount >= 0.5) {
+					if (totalCount > 0) {
 						//first pie chart (Nowcast's accuracy)
 						google.charts.load('current', {
 							'packages': ['corechart']
@@ -261,14 +271,19 @@ function chooseTimeFrameFunction(e) {
 						}
 						var currentYear = queryDateGlobal.substring(0, queryDateGlobal.indexOf('-'));
 						$('#infoText').html("<p class='text-info'>Correct and false non-exceedance and exceedance responses for the specified model for <strong>" + currentOpenSite + "</strong> during the recreational season of <strong>" + currentYear + "</strong> starting on Memorial Day for most beaches until today (<strong>" + queryDateGlobal + "</strong>). Non-exceedances and exceedances are determined by comparing E. coli concentrations in samples collected at the site to the state-specific water-quality standard. The nowcast model for this site correctly predicted non-exceedances and exceedances for <strong>" + Math.round(((CorrectExceed + CorrectNonExceed) / addedErrorTypes) * 100) + "%</strong> of samples collected. The persistence model (using the previous sample's bacteria concentration), correctly predicted non-exceedances and exceedances for <strong>" + Math.round(((prevDayCorrectExceed + prevDayCorrectNonExceed) / addedPrevDayErrorTypes) * 100) + "%</strong> of samples collected.</p>");
-					} else {
+					/*} else {
 						$('#piechart').html("<div class='alert alert-warning'><strong>Error:</strong> This site does not have enough data entered to generate pie charts.</div>");
+						$('#piechart2, #infoText').empty();
+					}*/
+					} else {
+						$('#piechart').html('<div class="alert alert-warning"><strong>Error(ctf):</strong> No data available.</div>');
 						$('#piechart2, #infoText').empty();
 					}
 				} else {
 					$('#piechart').html('<div class="alert alert-warning"><strong>Error(ctf):</strong> You must select "Whole season" from dropdown to see pie charts.</div>');
 					$('#piechart2, #infoText').empty();
 				}
+
 			} else {
 				$('#piechart').html('<div class="alert alert-warning"><strong>Error(ctf):</strong> No data available.</div>');
 				$('#piechart2, #infoText').empty();
@@ -310,7 +325,8 @@ function showPieChartFunction() {
 function dateQueryButtonFunction() {
 	var $btn = $('#dateQueryButton').button('loading');
 	var query = $('.datepicker').attr('value');
-	if (query !== moment().format('YYYY-MM-DD')) {
+	if (query !== moment().format('YYYY-MM-DD')) { //NOTE: see if necessary to make this more effecient
+		map.removeLayer(precipitation, wind, clouds);
 		$('.leaflet-control-layers').hide();
 	} else {
 		$('.leaflet-control-layers').show();
@@ -493,10 +509,7 @@ function onMarkerClick(e) {
 	}
 
 	//set out of season beach conditions in marker popup
-	function dateCompare(date1, date2){
-		return new Date(date2) > new Date(date1);
-	}
-	if ((e.layer.options.siteData.WEB_ENABLED == 2) && (dateCompare(queryDateGlobal, queryDateGlobal.substring(0, queryDateGlobal.indexOf('-')) + '-05-28') || dateCompare(queryDateGlobal.substring(0, queryDateGlobal.indexOf('-')) + '-09-03', queryDateGlobal))) {
+	if ((e.layer.options.siteData.WEB_ENABLED == 2) && offSeason()) {
 		$('#beachConditionBar').attr('style', 'padding:3px;color:white;background-color:#d3d3d3');
 		$('#beachCondition').html('Off-Season&nbsp;&nbsp;<i data-toggle="popover" data-content="Generally, the recreational season is Memorial Day to Labor Day" class="fa fa-info-circle fa-lg"></i>');
 	} else {
@@ -707,7 +720,7 @@ function querySites(queryValue, $btn) {
 				curMarker.options.siteData.currentConditions.DATE = queryValue;
 
 				//finally, create the marker with awesomeMarkers
-				if (curMarker.options.siteData.WEB_ENABLED == '2') {
+				if ((curMarker.options.siteData.WEB_ENABLED == '2') && offSeason()) {
 					var curMarkerSymbol = L.AwesomeMarkers.icon({
 						prefix: 'fa',
 						icon: '',
