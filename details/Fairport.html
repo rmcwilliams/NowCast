@@ -10,7 +10,7 @@
 
 <p>Fairport Harbor beach is operated by <a href="http://www.lakemetroparks.com/parks/fairport-harbor.shtml" target="_blank">Lake Metroparks</a> and monitored by the <a href="http://www.lcghd.org/" target="_blank">Lake County General Health District</a>.  The nowcast has been used at Fairport Harbor since 2014.</p>
 
-<p>The information on this page is updated by the <a href="http://www.lcghd.org/" target="_blank">Lake County General Health District</a> by 10:30 AM (EDT) every day during the swimming season. This nowcast issues advisories and predicts the probability once a day at the posted time only. Storms are likely to result in a quick change in water quality.</p>
+<p>The information on this page is updated by the Lake County General Health District by 10:30 AM (EDT) every other day during the swimming season. This nowcast issues advisories and predicts the probability once a day at the posted time only. Storms are likely to result in a quick change in water quality.</p>
 
 <p>Beach water quality information at Fairport Harbor and other beaches around Ohio is also available through <a href="http://publicapps.odh.ohio.gov/BeachGuardPublic/Default.aspx" target="_blank">BeachGuard</a>, operated by Ohio Department of Health.</p>
 
@@ -20,7 +20,7 @@
 
 <p>The variables below will be used in a model to predict the probability of exceeding the <i>Escherichia coli</i> (<i>E. coli</i>) beach action value of 235 most-probable number/100 mL (MPN/100 mL).  If the probability exceeds the established threshold, the beach is posted with a swimming advisory. During 2017, there is one full-season model for Fairport Harbor and one backup model if local weather data are not available for the nowcast.</p>
 
-<p>The USGS operates a <a href="https:waterdata.usgs.gov/oh/nwis/uv?site_no=414514081174400" target="_blank">weather station at Mentor Headlands</a> to measure wind speed, wind direction, barometric pressure, air temperature, net solar radiation, incident light, and rainfall.</p>
+<p>The USGS operates a <a href="https://waterdata.usgs.gov/oh/nwis/uv/?site_no=414514081174400&agency_cd=USGS" target="_blank">weather station at Mentor Headlands</a> to measure wind speed, wind direction, barometric pressure, air temperature, net solar radiation, incident light, and rainfall.</p>
 <!--style>
 table, th, td {
     border: 1px solid black;
@@ -36,39 +36,50 @@ th, td {
 
 <!--h2>Cell that spans two columns:</h2-->
 <table border="1" border="solid" border="black" border-collapse="collapse" style="width:100%">
-  <tr>
-   <th colspan="3" align="center">Fairport Harbor nowcast model &#8212; 2017</th>
-  </tr>
-  <tr>
-    <th align="center">Model information</th>
-    <th align="center">Main model variables</th>
-    <th align="center">Backup model variables</th>
-  </tr>
-  <tr>
-    <td padding="5" align="left">
-    <p>Data used to develop the model (years): 2010-16</p>
-    <p>Threshold probability = 27% Main model, 27% Backup model (when local weather data are not available)</p>
-    </td>
-    <td padding="5" align="left">
-    <ul>
-    <li>Turbidity</li>
-    <li>Lake level, change in 24 hours (Fairport station 9063053)</li>
-    <li>Rainfall in the past 24 hours, at the USGS weather station at Mentor Headlands</li>
-    <li>Rainfall in the past 72 hours, weighted, at the USGS weather station at Mentor Headlands</li>
-    <li>Day of the year</li>
-    <li>Onshore wind component as observed at Cleveland Burke Lakefront Airport</li>
-    </ul>
-    </td>
-    <td padding="5" align="left">
-    <ul>
-    <li>Turbidity</li>
-    <li>Rainfall in the past 48 hours, at Cleveland Burke Lakefront Airport</li>
-    <li>Wind speed, at Cleveland Burke Lakefront Airport</li>
-    <li>Onshore wind component, as observed at Cleveland Burke Lakefront Airport</li>
-    <li>Day of the year</li>
-    </ul>
-    </td>
-  </tr>
+    <tr>
+        <th colspan="3" align="center">Fairport Harbor nowcast model &#8212; 2018</th>
+    </tr>
+    <tr>
+        <th align="center">Main Model information</th>
+        <th align="center">Main model variables</th>
+    </tr>
+    <tr>
+        <td padding="5" align="left">
+            <p>Data used to develop the model (years): 2010-17</p>
+            <p>Threshold probability = 29%</p>
+        </td>
+        <td padding="5" align="left">
+            <ul>
+                <li>Turbidity</li>
+                <li>Wave height</li>
+                <li>Day of the year</li>
+                <li>Water temperature</li>
+                <li>Wind speed and direction (USGS site 414514081175500)</li>
+                <li>Rainfall in the previous 24 and 48 hours (USGS site 414514081175500)</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <th align="center">Backup Model information</th>
+        <th align="center">Backup model variables</th>
+    </tr>
+    <tr>
+        <td padding="5" align="left">
+            <p>Data used to develop the model (years): 2010-17</p>
+            <p>Threshold probability = 28%</p>
+        </td>
+        <td padding="5" align="left">
+            <ul>
+                <li>Turbidity</li>
+                <li>Wave height</li>
+                <li>Water temperature</li>
+                <li>Birds counted at time of sampling</li>
+                <li>Rainfall in the previous 48 hours, weighted (Cleveland Burke Lakefront Airport)</li>
+                <li>Day of the year</li>
+                <li>Discharge, instantaneous at 8:00 a.m., Grand River near Painesville (USGS site 04212100)</li>
+            </ul>
+        </td>
+    </tr>
 </table>
 
 &nbsp;

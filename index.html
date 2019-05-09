@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 
 <head>
@@ -9,7 +9,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
-	<title>Nowcast Beach Status</title>
+	<title>NowCast Status</title>
 
 	<!-- CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
@@ -31,7 +31,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.js"></script>
 	<script src="js/main.js"></script>
 	<!--<script src="js/beaches.js"></script>-->
-
+	<!--stuff for pie chart-->
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 
 <body id="body">
@@ -55,45 +56,25 @@
 	<!--</div>-->
 	<!-- /.modal-dialog -->
 	<!--</div>-->
-	<div id="selectStatetoBegin" class="modal fade" tabindex="-1" role="dialog">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<br /><br />
-				<div align="center" style="font-family: 'Ubuntu', sans-serif;">
-					<h1>
-						<font color="darkred">Select a state using the drop down menu in the header to begin.</font>
-					</h1>
-					(click anywhere outside of this dialog box to exit)</div>
-				<br /><br />
-			</div>
-			<!-- /.modal-content -->
-		</div>
-		<!-- /.modal-dialog -->
-	</div>
 	<div id="overlay" align="center">
-		<div id="text">loading...<br /><img src="./loading.gif" height="" width="" /></div>
+		<div id="text"><i class="fa fa-cog fa-spin" style="font-size:100px"></i></div>
 	</div>
 	<div id='topnav'>
 		<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-			<div class="navbar-header">
-				<button id="aboutButton" type="button" class="btn btn-info navbar-btn pull-right" onclick="$('#aboutModal').modal('show'); return false;"><i class="fa fa-info-circle"></i><span class="hidden-xs">&nbsp;&nbsp;About</span></button>
-				<button id="legendButton" type="button" class="btn btn-info navbar-btn pull-right"><i class="fa fa-list-ul"></i><span class="hidden-xs">&nbsp;&nbsp;Legend</span></button>
-				<a class="navbar-brand" href="https://www.usgs.gov"><img class='hidden-xs' style='display:inline-block;' src="images/usgs_logo.png"/><img class='visible-xs' style='display:inline-block;' src="images/usgs_logo_small.png"/><span class='hidden-xs' style='font-size:20px;display:inline-block;'>&nbsp;&nbsp;Nowcast Beach Status</span><span class='visible-xs' style='font-size:9px;display:inline-block;'>Nowcast Beach Status</span></a>
-				<!--<span>
-			<a href="/maps/nowcast%202.0URL/Embed.html" class="btn btn-info" role="button" style="float:right;margin-top:8px;margin-right:15px;">Embed Your Beach(es) on Your Website</a>
-			 </span>-->
-				<span>
-				 <div id="stateDropdown" style='float:right;margin-top:8px;margin-right:15px;'>
-					<select id='stateDropdownSelect' class='selectpicker' data-width='fit' data-selected-text-format='count' title='<b><font color="darkred">State</font></b>'></select>
-				 </div>
-			 </span>
-			</div>
+            <div class="navbar-header">
+                <button id="aboutButton" type="button" class="btn btn-info navbar-btn pull-right" onclick="$('#aboutModal').modal('show'); return false;"><i class="fa fa-info-circle"></i><span class="hidden-xs">&nbsp;&nbsp;About</span></button>
+                <button id="legendButton" type="button" class="btn btn-info navbar-btn pull-right"><i class="fa fa-list-ul"></i><span class="hidden-xs">&nbsp;&nbsp;Legend</span></button>
+                <a class="navbar-brand" href="https://www.usgs.gov"><img class='hidden-xs' style='display:inline-block;' src="images/usgs_logo.png" /><img class='visible-xs' style='display:inline-block;' src="images/usgs_logo_small.png" /><span class='hidden-xs' style='font-size:20px;display:inline-block;'>&nbsp;&nbsp;NowCast Status</span><span class='visible-xs' style='font-size:9px;display:inline-block;'>NowCast Status</span></a>
+                <!--<span>
+    <a href="/maps/nowcast%202.0URL/Embed.html" class="btn btn-info" role="button" style="float:right;margin-top:8px;margin-right:15px;">Embed Your Beach(es) on Your Website</a>
+     </span>-->
+            </div>
 		</div>
 
 		<!--add Beach Conditions for:... thing below once you know how to position it correctly-->
 		<!--<div class="display bs-callout bs-callout-info" role="alert">Beach Conditions for: <span id="currentDate"></span></div>-->
 	</div>
-	<div id="legend" class="legend" style="display:none">
+	<div id="legend" class="legend" style="display:none;">
 		<p>To query another date, use the datepicker below:</p>
 		<div style="margin:5px;" class="row">
 			<div class="btn-group pull-left">
@@ -129,6 +110,11 @@
 				<td>&nbsp;&nbsp;Off Season</td>
 				</tr>
 			</table>
+			<div style="width: 250px;">
+				<b>Note:</b> Sites are closed only in in NY. OH and PA do not close sites,
+					instead, advisories are posted when conditions are predicted to be above
+					the recreational threshold.</div>
+
 		</div>
 	</div>
 
@@ -173,16 +159,15 @@
 				<span class='hidden-xs'><span class='visible-tablet-mobile' style='font-size:12px; color:white'>URL: <a href="https://ny.water.usgs.gov/maps/nowcast/" title="https://ny.water.usgs.gov/maps/nowcast/" style='font-size:12px; color:white'>https://ny.water.usgs.gov/maps/nowcast/</a><br /></span></span>
 				<span class='visible-xs'><span class='visible-tablet-mobile' style='font-size:6px; color:white'>URL: <a href="https://ny.water.usgs.gov/maps/nowcast/" title="https://ny.water.usgs.gov/maps/nowcast/" style='font-size:6px; color:white'>https://ny.water.usgs.gov/maps/nowcast/</a><br /></span></span>
 
-				<span class='hidden-xs'><span class='visible-tablet-mobile' style='font-size:12px; color:white'>Page Contact Information: <a href="mailto:pdevries@usgs.gov" style='font-size:12px; color:white' target="_blank">Website Manager</a><br /></span></span>
-				<span class='visible-xs'><span class='visible-tablet-mobile' style='font-size:6px; color:white'>Page Contact Information: <a href="mailto:pdevries@usgs.gov" style='font-size:6px; color:white' target="_blank">Website Manager</a><br /></span></span>
+				<span class='hidden-xs'><span class='visible-tablet-mobile' style='font-size:12px; color:white'>Page Contact Information: <a href="mailto:marsmith@usgs.gov" style='font-size:12px; color:white' target="_blank">Website Manager</a><br /></span></span>
+				<span class='visible-xs'><span class='visible-tablet-mobile' style='font-size:6px; color:white'>Page Contact Information: <a href="mailto:marsmith@usgs.gov" style='font-size:6px; color:white' target="_blank">Website Manager</a><br /></span></span>
 
-				<span class='hidden-xs'><span class='visible-tablet-mobile' style='font-size:12px; color:white'>Page Last Modified: Wednesday, August 2, 2017</span></span>
-				<span class='visible-xs'><span class='visible-tablet-mobile' style='font-size:6px; color:white'>Page Last Modified: Wednesday, August 2, 2017</span></span>
+				<span class='hidden-xs'><span class='visible-tablet-mobile' style='font-size:12px; color:white'>Page Last Modified: Tuesday, June 19, 2018</span></span>
+				<span class='visible-xs'><span class='visible-tablet-mobile' style='font-size:6px; color:white'>Page Last Modified: Tuesday, June 19, 2018</span></span>
 				</p>
 				</span>
 			</div>
 		</div>
-	</div>
 	</div>
 	<!-- END USGS Footer Template -->
 
@@ -196,7 +181,7 @@
 				<div id="popupModal" class="modal-body">
 					<ul class="nav nav-tabs" id="tabs">
 						<li role="presentation" class="active"><a href="#tab1" data-toggle="tab"><i class="fa fa-caret-square-o-right"></i>&nbsp;&nbsp;Current Conditions</a></li>
-						<li role="presentation"><a href="#tab2" data-toggle="tab"><i class="fa fa-calendar"></i>&nbsp;&nbsp;Recent Conditions</a></li>
+						<li role="presentation" id="recentCond"><a href="#tab2" data-toggle="tab"><i class="fa fa-calendar"></i>&nbsp;&nbsp;Recent Conditions</a></li>
 						<li role="presentation" id="3rdTab"></li>
 						<!--<div id="3rdTab"></div>-->
 					</ul>
@@ -230,8 +215,53 @@
 						</div>
 						<div class="tab-pane" id="tab2">
 							</br>
+							<div class="row">
+								<!-- <div id="timeFrameDropDownHide" class="col-sm-6">
+									<select id='chooseTimeFrame' class='selectpicker' data-width='fit' data-selected-text-format='count' title='<b><font color="darkred">Choose Time Frame</font></b>'>
+										<option value="7days">7 days</option>
+										<option value="season">Whole season</option>
+									</select>
+								</div> -->
+								<div class="col-sm-6" id="showPieChartContainer"><button id="showPieChart" type="button" class="btn btn-success">NowCast's Accuracy</button></div>
+							</div>
+
 							<table id="recentConditionsTable" class="table table-condensed table-striped table-hover">
 							</table>
+							<div class="row">
+								<div id="piechart" class="center" style="display:none;"></div>
+							</div>
+							<div class="row">
+								<div id="piechart2" class="center" style="display:none;"></div>
+							</div>
+							<div class="row">
+								<div id="chartLegend" style="display:none;">
+									<table class="table table-condensed center-table">
+											<thead>
+												<tr>
+													<th>Color</th>
+													<th>Value</th>
+												</tr>
+											</thead>
+											<tr>
+												<td style="background-color:#C0392B;"></td>
+												<td>Correct Exceed</td>
+											</tr>
+											<tr>
+												<td style="background-color:#229954;"></td>
+												<td>Correct Non-Exceed</td>
+											</tr>
+											<tr>
+												<td style="background-color:#A9DFBF;"></td>
+												<td>False Exceed</td>
+											</tr>
+											<tr>
+												<td style="background-color:#E6B0AA;"></td>
+												<td>False Non-Exceed</td>
+											</tr>
+										</table>
+								</div>
+								<div id="infoText" class='well' style="display:none;margin:20px;"></div>
+							</div>
 						</div>
 						<div class="tab-pane" id="tab3">
 							</br>
@@ -250,8 +280,7 @@
 	<div id="aboutModal" class="modal fade" tabindex="-1" role="dialog">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
-				<div id="changingTabs">
-				</div>
+				<div id="changingTabs"></div>
 			</div>
 			<!-- /.modal-content -->
 		</div>

@@ -13,6 +13,32 @@ body {
 	display:inline-block;
 }
 
+svg > g > g:last-child { pointer-events: none }
+
+.center {
+    margin: 0 auto;
+    width: 80%;
+}
+
+.indent-block {
+    margin-left:20px;
+    margin-right:20px; 
+}
+
+.tab-pane > p {
+    padding-left:20px;
+    padding-right:20px;
+}
+
+.tab-pane > h4 {
+    padding-top:20px;
+}
+
+.center-table {
+    width: 50%;
+    margin: 20px auto;
+}
+
 .nav-tabs>li>a {
 	font-size:12px;
 }
@@ -192,6 +218,10 @@ div.image_container img {
     transform: translate(-50%,-50%);
     -ms-transform: translate(-50%,-50%);
 }
+.Red {background-color:red;}
+.Green {background-color:green;}
+.Blue {background-color:blue;}
+
 @media (max-width: 767px) {
  #showPieChart, #showPieChartContainer {
     float: left;

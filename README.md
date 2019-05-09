@@ -1,3 +1,6 @@
+This version of Nowcast contains no state dropdown.
+
+-----------------------------------------------
 # nowcast
 Nowcast Beach Status
 

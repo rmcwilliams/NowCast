@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- css -->
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- javascript -->
+    <!-- jQuery library -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- javascript -->
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@1/dist/clipboard.min.js"></script>
+
+    <title>Great Lakes NowCast Request Form</title>
+</head>
+<body>
+
+    <!-- new stuff -->
+    <div class="container">
+        <h2>Fill this form out if you would like your swimming area to be added to NowCast.</h2>
+        <small>Fields with a * are required.</small>
+        <br><br>
+            <form name="" action="AddSiteSend.php" onsubmit="" method="post">
+                <h4><b>Contact Information</b></h4>
+                <hr>
+                <div class="form-group">
+                    <label for="manager">Site Manager:*</label>
+                    <input type="text" name="manager" class="form-control" placeholder="Beach manager">
+                </div>
+                <div class="form-group">
+                    <label for="state">State:*</label>
+                    <input type="text" name="state" class="form-control" placeholder="Enter your state">
+                </div>
+                <div class="form-group">
+                    <label for="county">County:*</label>
+                    <input type="text" name="county" class="form-control" placeholder="Enter your county">
+                </div>
+                <div class="form-group">
+                    <label for="siteName">Site Name:*</label>
+                    <input type="text" name="siteName" class="form-control" placeholder="Enter the name of your site">
+                </div>
+                <div class="form-group">
+                    <label for="siteAddress">Site Address:*</label>
+                    <input type="text" name="siteAddress" class="form-control" placeholder="Enter the address of your site">
+                </div>
+                <div class="form-group">
+                    <label for="contact">Contact Name:*</label>
+                    <input type="text" name="contact" class="form-control" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:*</label>
+                    <input type="text" name="email" class="form-control" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number:*</label>
+                    <input type="text" name="phone" class="form-control" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="website">Website (if one exists):</label>
+                    <input type="text" name="website" class="form-control" placeholder="">
+                </div>
+                <br>
+                <h4><b>Site Information and Data Availability</b></h4>
+                <hr>
+                <div class="form-group">
+                    <label for="latitude">Latitude:</label>
+                    <input type="text" name="latitude" class="form-control" placeholder="Enter the latitude of your site">
+                </div>
+                <div class="form-group">
+                    <label for="longitude">Longitude:</label>
+                    <input type="text" name="longitude" class="form-control" placeholder="Enter the longitude of your site">
+                </div>
+                <div class="form-group">
+                    <label for="KMZ">Google KMZ file name:</label>
+                    <input type="text" name="KMZ" class="form-control" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="bodyOfWater">Body of Water:</label>
+                    <input type="text" name="bodyOfWater" class="form-control" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="yrsDataAvail">Years of Data Available:</label>
+                    <input type="text" name="yrsDataAvail" class="form-control" placeholder="">
+                </div>
+                <h5><b>Types of sampling:</b></h5>
+                <label class="checkbox-inline"><input type="checkbox" value="E. coli" name="sampling[]">E. coli</label>
+                <label class="checkbox-inline"><input type="checkbox" value="HABS" name="sampling[]">HABs</label>
+                <div class="form-group">
+                    <label for="otherSampling">Other:</label>
+                    <input type="text" name="otherSampling" class="form-control" placeholder="Please specify">
+                </div>
+                <div class="form-group">
+                    <label for="numDaysSampled">Number of Days Sampled for E. coli and (or) HABs During Recreational Periods:</label>
+                    <input type="text" name="numDaysSampled" class="form-control" placeholder="">
+                </div>
+                <h5><b>Check (if data exist):</b></h5>
+                <label class="checkbox-inline"><input type="checkbox" value="waveHeight" name="data[]">WaveHeight</label>
+                <label class="checkbox-inline"><input type="checkbox" value="ForeshoreHead" name="data[]">ForeshoreHead</label>
+                <label class="checkbox-inline"><input type="checkbox" value="Turbidity" name="data[]">Turbidity</label>
+                <label class="checkbox-inline"><input type="checkbox" value="Temperature" name="data[]">Temperature</label>
+                <label class="checkbox-inline"><input type="checkbox" value="Algae" name="data[]">Algae</label>
+                <label class="checkbox-inline"><input type="checkbox" value="Debris" name="data[]">Debris</label>
+                <label class="checkbox-inline"><input type="checkbox" value="Fecal" name="data[]">Fecal</label>
+                <label class="checkbox-inline"><input type="checkbox" value="BirdCount" name="data[]">BirdCount</label>
+                <label class="checkbox-inline"><input type="checkbox" value="Pigment" name="data[]">Pigment</label>
+                <div class="form-group">
+                    <label for="otherPhysParam">Other physical parameters:</label>
+                    <textarea class="form-control" rows="5" name="otherPhysParam"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tribInfluences">Tributary Influences:</label>
+                    <textarea class="form-control" rows="5" name="tribInfluences"></textarea>
+                </div>
+                <h5><b>Check (if tributary data exist):</b></h5>
+                <label class="checkbox-inline"><input type="checkbox" value="GageHeight" name="tribData[]">GageHeight</label>
+                <label class="checkbox-inline"><input type="checkbox" value="Turbidity" name="tribData[]">Turbidity</label>
+                <label class="checkbox-inline"><input type="checkbox" value="E. coli" name="tribData[]">E. coli</label>
+                <div class="form-group">
+                    <label for="tribOtherPhysParam">Other physical parameters:</label>
+                    <textarea class="form-control" rows="5" name="tribOtherPhysParam"></textarea>
+                </div>
+                <h5><b>On-site Weather Station?</b></h5>
+                <label class="radio-inline"><input type="radio" name="weatherStation" value="Yes">Yes</label>
+                <label class="radio-inline"><input type="radio" name="weatherStation" value="No">No</label>
+                <h5><b>On-site Buoy Station?</b></h5>
+                <label class="radio-inline"><input type="radio" name="buoyStation" value="Yes">Yes</label>
+                <label class="radio-inline"><input type="radio" name="buoyStation" value="No">No</label>
+                <div class="form-group">
+                    <label for="nearestAirport">Nearest NWS Airport:</label>
+                    <input type="text" class="form-control" name="nearestAirport">
+                </div>
+                <h5><b>Lake Water Levels Near Site (<a href="https://www.tidesandcurrents.noaa.gov/stations.html?type=Water+Levels">https://www.tidesandcurrents.noaa.gov/stations.html?type=Water+Levels</a>)</b></h5>
+                <div class="form-group">
+                    <label for="lakeLvlStnName">Lake Levels Station Name:</label>
+                    <input type="text" class="form-control" name="lakeLvlStnName">
+                </div>
+                <div class="form-group">
+                    <label for="stationNumber">Station Number:</label>
+                    <input type="text" class="form-control" name="stationNumber">
+                </div>
+                <div class="form-group">
+                    <label for="siteCameraURL">Site Camera URL:</label>
+                    <input type="text" class="form-control" name="siteCameraURL">
+                </div>
+                <br>
+                <h4><b>Site Modeling Information, If Applicable</b></h4>
+                <hr>
+                <div class="form-group">
+                    <label for="sitePersisPerc">What is the Site Persistence Percentage(Correct) <small>How often is the previous day's sample concentration correct for estimating water-quality for the current day?</small>:</label>
+                    <input type="text" class="form-control" name="sitePersisPerc">
+                </div>
+                <h5><b>Has a Model been Implemented at this Location? (If yes please provide background information in notes):</b></h5>
+                <label class="radio-inline"><input type="radio" name="modelImplemented" value="Yes">Yes</label>
+                <label class="radio-inline"><input type="radio" name="modelImplemented" value="No">No</label>
+                <div class="form-group">
+                    <label for="siteModPerc">What is the Site Model Percentage(Correct):</label>
+                    <input type="text" class="form-control" name="siteModPerc">
+                </div>
+                <h5><b>Have you used Virtual Beach Version 3?:</b></h5>
+                <label class="radio-inline"><input type="radio" name="virtualBeach" value="Yes">Yes</label>
+                <label class="radio-inline"><input type="radio" name="virtualBeach" value="No">No</label>
+                <div class="form-group">
+                    <label for="virtBeachOrient">Virtual Beach Orientation at Site:</label>
+                    <input type="text" class="form-control" name="virtBeachOrient">
+                </div>
+                <div class="form-group">
+                    <label for="yrsUsingVirtBeach">How Many Years has this Site been Using Virtual Beach?:</label>
+                    <input type="text" class="form-control" name="yrsUsingVirtBeach">
+                </div>
+                <br>
+                <h4><b>Site NowCast Assistance</b></h4>
+                <hr>
+                <h5>
+                    <b>
+                        The USGS is offering three levels of assistance in nowcasting and modeling for E. coli
+                        and (or) microcystins produced by cyanoHABs. Choose level of assistance required:
+                    </b>
+                </h5>
+                <div class="radio">
+                    <label><input type="radio" name="tier" value="Tier 1">Tier 1 - Available assistance: Maintain website and assist with existing nowcasts.</label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="tier" value="Tier 2">Tier 2 - Available assistance: Help site managers to develop non-observational and observational models based on data
+                        collected in previous years. Each site must have 2 or more years of sanitary survey or water-quality data (and E. coli or microcystin data).
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="tier" value="Tier 3">Tier 3 - Available assistance: Help site managers to develop non-observational models. Site has 2 or more years of E. coli or microcystin data, but
+                        does not have sanitary survey or water-quality data for multiple years. Will assist to establish protocols so that data collection will lead to future observational model development.
+                    </label>
+                </div>
+                <br>
+                <hr>
+                <div class="form-group">
+                    <label for="notes">Notes:</label>
+                    <textarea class="form-control" rows="10" name="notes"></textarea>
+                </div>
+                <button type="submit" class="btn btn-default" name="submit">Submit</button>
+            </form>
+    </div>
+</body>
+</html>
