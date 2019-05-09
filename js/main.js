@@ -859,10 +859,10 @@ function setMarkerColor(condition) {
 
 function setConditionPopup(condition) {
 	if (condition == 'No Condition Reported') {
-		return 'No data has been received for this beach'
+		return 'No data has been received for this site'
 	}
 	if (condition == '') {
-		return 'No data has been received for this beach'
+		return 'No data has been received for this site'
 	}
 	if (condition == 'Good') {
 		return 'E.coli bacterial levels are estimated to be within the water quality standard and acceptable for swimming.'
@@ -871,6 +871,6 @@ function setConditionPopup(condition) {
 		return 'E.coli bacterial levels are estimated to exceed the water quality standard and be unacceptable for swimming.'
 	}
 	if (condition == 'Closed') {
-		return 'Beach is closed for the day.'
+		return 'Site is closed for the day.'
 	}
 }
