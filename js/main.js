@@ -18,6 +18,7 @@ var stateOfClickedMarker;
 var precipitation;
 var wind;
 var clouds;
+var inIframeMode = false;
 
 //main document ready function
 $(document).ready(function () {
@@ -328,7 +329,7 @@ function showPieChartFunction() {
 function dateQueryButtonFunction() {
 	var $btn = $('#dateQueryButton').button('loading');
 	var query = $('.datepicker').attr('value');
-	if (query !== moment().format('YYYY-MM-DD')) { //NOTE: see if necessary to make this more effecient
+	if (query !== moment().format('YYYY-MM-DD') && !inIframeMode) { //NOTE: see if necessary to make this more effecient
 		map.removeLayer(precipitation, wind, clouds);
 		$('.leaflet-control-layers').hide();
 	} else {
@@ -336,9 +337,12 @@ function dateQueryButtonFunction() {
 	}
 	querySites(query, $btn);
 }
-
+function clickLegendBtn() {
+	$('#legend').toggle();
+}
 function processURLparams() {
 	if (URLparams.state && URLparams.lat && URLparams.lng && URLparams.zoom) {
+		inIframeMode = true;
 		loadAllSites = false;
 		theChosenState = URLparams.state.toUpperCase();
 		map.setView([URLparams.lat, URLparams.lng], URLparams.zoom)
@@ -354,7 +358,9 @@ function processURLparams() {
 		panToPoint = false;
 
 		$("#sitelink").html("<a href='https://ny.water.usgs.gov/maps/nowcast/' style='text-decoration: none;color:red;'>Powered by <font color='black'>NowCast Status</font>. Click here to see the full map of swimming areas.</a>");
-		$("#usgsfooter, #aboutModal, #legend, #topnav").remove();
+		$("#usgsfooter, #aboutModal, #topnav").remove();
+		map.removeLayer(precipitation, wind, clouds);
+		$('.leaflet-control').html('<button type="button" class="btn btn-primary" onclick="clickLegendBtn()">Legend</button>');
 		$("#body").css("padding-top", "0px");
 		$("html, body, #map").css({
 			"height": "-webkit-calc(100% - 8px)",
